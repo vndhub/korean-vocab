@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>한국어 단어 — Korean Vocab SC1</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #5B3FA0;
+  --purple-light: #8B6FCF;
+  --purple-bg: #F3EEFF;
+  --green: #2ECC71;
+  --red: #E74C3C;
+  --orange: #F39C12;
+  --bg: #FAF7FF;
+  --card: #FFFFFF;
+  --text: #2C2C2C;
+  --muted: #9B8FBF;
+  --border: #EDE8F5;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Noto Sans KR', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  max-width: 520px;
+  margin: 0 auto;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+button { font-family: inherit; cursor: pointer; border: none; outline: none; }
+
+/* ─── SCREENS ─── */
+.screen { display: none; padding: 16px 16px 100px; min-height: 100vh; animation: fadeIn .3s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* ─── HEADER ─── */
+.header { display:flex; justify-content:space-between; align-items:center; padding:12px 0 20px; }
+.header-title { font-size:26px; font-weight:900; color:var(--purple); line-height:1.2; }
+.header-sub { font-size:12px; color:var(--muted); font-weight:400; }
+.header-btns { display:flex; gap:6px; }
+.icon-btn { width:40px; height:40px; border-radius:12px; background:var(--card); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow: 0 2px 8px rgba(91,63,160,.08); }
+
+/* ─── PROGRESS CARD ─── */
+.progress-card { background:var(--card); border-radius:20px; padding:20px; box-shadow:0 4px 24px rgba(91,63,160,.08); margin-bottom:20px; }
+.progress-row { display:flex; justify-content:space-around; margin-bottom:14px; text-align:center; }
+.p-num { font-size:28px; font-weight:900; color:var(--purple); }
+.p-num.red { color:var(--red); }
+.p-num.green { color:var(--green); }
+.p-label { font-size:11px; color:var(--muted); margin-top:2px; }
+.bar-bg { height:8px; background:var(--purple-bg); border-radius:4px; overflow:hidden; }
+.bar-fill { height:100%; background:linear-gradient(90deg,#667EEA,#764BA2); border-radius:4px; transition:width .5s; }
+.bar-text { font-size:11px; color:var(--muted); text-align:center; margin-top:6px; }
+.review-btn { width:100%; padding:13px; margin-top:12px; border-radius:14px; background:linear-gradient(135deg,var(--red),#C0392B); color:#fff; font-size:15px; font-weight:700; }
+
+/* ─── UNITS GRID ─── */
+.units-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.unit-card { background:var(--card); border-radius:16px; padding:14px 6px 10px; text-align:center; box-shadow:0 2px 12px rgba(91,63,160,.06); transition:transform .15s; }
+.unit-card:active { transform:scale(.96); }
+.unit-icon { font-size:26px; margin-bottom:4px; }
+.unit-num { font-size:9px; color:var(--muted); font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+.unit-kr { font-size:15px; font-weight:900; color:var(--purple); }
+.unit-vi { font-size:9px; color:var(--muted); margin-bottom:6px; }
+.unit-bar { height:3px; background:var(--purple-bg); border-radius:2px; overflow:hidden; margin:0 4px; }
+.unit-bar-fill { height:100%; background:linear-gradient(90deg,#667EEA,#764BA2); border-radius:2px; }
+.unit-count { font-size:9px; color:var(--muted); margin-top:4px; }
+
+/* ─── TOP BAR ─── */
+.top-bar { display:flex; align-items:center; gap:10px; padding:10px 0 16px; }
+.back-btn { background:none; font-size:14px; color:#667EEA; font-weight:700; padding:6px 0; }
+.top-title { font-size:15px; font-weight:700; color:var(--purple); flex:1; }
+
+/* ─── UNIT DETAIL ─── */
+.unit-hero { text-align:center; font-size:18px; color:var(--muted); margin-bottom:18px; font-weight:300; }
+.group-card { background:var(--card); border-radius:16px; padding:16px; margin-bottom:12px; box-shadow:0 2px 12px rgba(91,63,160,.06); }
+.group-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.group-name { font-size:14px; font-weight:700; color:var(--purple); }
+.group-count { font-size:11px; color:var(--muted); font-weight:600; }
+.word-chips { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
+.word-chip { padding:3px 10px; border-radius:20px; border:1px solid var(--border); background:var(--purple-bg); font-size:12px; color:#5A4A8A; }
+.more-words { font-size:11px; color:var(--muted); align-self:center; margin-left:4px; }
+.group-btns { display:flex; gap:8px; }
+.btn-flash { flex:1; padding:10px; border-radius:12px; background:linear-gradient(135deg,#667EEA,#764BA2); color:#fff; font-size:13px; font-weight:700; }
+.btn-quiz { flex:1; padding:10px; border-radius:12px; border:2px solid #667EEA; background:#fff; color:#667EEA; font-size:13px; font-weight:700; }
+
+/* ─── FLASHCARD ─── */
+.fc-counter { text-align:center; color:var(--muted); font-size:13px; font-weight:600; margin-bottom:14px; }
+.fc-wrapper { perspective:1000px; margin-bottom:20px; }
+.fc-inner { width:100%; min-height:300px; position:relative; transition:transform .5s ease; transform-style:preserve-3d; }
+.fc-inner.flipped { transform:rotateY(180deg); }
+.fc-face { position:absolute; width:100%; min-height:300px; backface-visibility:hidden; border-radius:24px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; }
+.fc-front { background:var(--card); box-shadow:0 8px 32px rgba(91,63,160,.12); }
+.fc-back { background:linear-gradient(135deg,#667EEA,#764BA2); transform:rotateY(180deg); color:#fff; box-shadow:0 8px 32px rgba(91,63,160,.2); }
+.fc-emoji { font-size:44px; margin-bottom:10px; }
+.fc-kr { font-size:40px; font-weight:900; color:var(--purple); margin-bottom:6px; }
+.fc-rom { font-size:15px; color:var(--muted); margin-bottom:12px; }
+.fc-speak { font-size:28px; background:none; margin-bottom:6px; }
+.fc-hint { font-size:11px; color:#ccc; }
+.fc-kr-sm { font-size:22px; font-weight:700; opacity:.9; margin-bottom:6px; }
+.fc-vi { font-size:26px; font-weight:800; margin-bottom:6px; }
+.fc-en { font-size:15px; opacity:.8; }
+.fc-rom-back { font-size:13px; opacity:.7; margin-top:4px; }
+.rate-row { display:flex; gap:8px; justify-content:center; }
+.rate-btn { padding:12px 14px; border-radius:14px; color:#fff; font-size:13px; font-weight:700; flex:1; max-width:130px; }
+.rate-again { background:var(--red); }
+.rate-hard { background:var(--orange); }
+.rate-easy { background:var(--green); }
+
+/* ─── QUIZ ─── */
+.quiz-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.quiz-score { font-size:15px; font-weight:700; color:var(--green); }
+.quiz-card { background:var(--card); border-radius:20px; padding:24px; text-align:center; margin-bottom:18px; box-shadow:0 4px 20px rgba(91,63,160,.08); }
+.quiz-mode { font-size:12px; color:var(--muted); margin-bottom:8px; }
+.quiz-prompt { font-size:30px; font-weight:900; color:var(--purple); }
+.quiz-speak { margin-top:10px; padding:6px 16px; border-radius:20px; background:var(--purple-bg); color:#667EEA; font-size:12px; font-weight:600; }
+.opts-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.opt-btn { padding:14px 10px; border-radius:14px; border:2px solid #E0E0E0; background:#fff; font-size:15px; font-weight:600; transition:all .25s; }
+.opt-btn.correct { background:#D5F5E3; border-color:var(--green); color:#1A7A3A; }
+.opt-btn.wrong { background:#FADBD8; border-color:var(--red); color:#C0392B; }
+
+/* ─── DONE ─── */
+.done-card { background:var(--card); border-radius:24px; padding:48px 24px; text-align:center; margin-top:40px; box-shadow:0 8px 32px rgba(91,63,160,.12); }
+.done-emoji { font-size:60px; margin-bottom:14px; }
+.done-title { font-size:26px; font-weight:900; color:var(--purple); margin-bottom:6px; }
+.done-sub { font-size:15px; color:var(--muted); margin-bottom:24px; }
+.done-btn { padding:12px 32px; border-radius:14px; background:linear-gradient(135deg,#667EEA,#764BA2); color:#fff; font-size:15px; font-weight:700; }
+
+/* ─── CHECKLIST ─── */
+.checklist-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.checklist-stats { font-size:13px; color:var(--muted); }
+.checklist-filter { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+.filter-btn { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; border:1.5px solid var(--border); background:var(--card); color:var(--muted); }
+.filter-btn.active { background:var(--purple); color:#fff; border-color:var(--purple); }
+.cl-unit-group { margin-bottom:16px; }
+.cl-unit-title { font-size:14px; font-weight:800; color:var(--purple); margin-bottom:8px; padding:6px 12px; background:var(--purple-bg); border-radius:10px; }
+.cl-word { display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px solid #F5F2FA; }
+.cl-word:last-child { border-bottom:none; }
+.cl-check { width:22px; height:22px; border-radius:6px; border:2px solid #D0C8E0; background:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; transition:all .2s; }
+.cl-check.checked { background:var(--green); border-color:var(--green); color:#fff; }
+.cl-info { flex:1; min-width:0; }
+.cl-kr { font-size:16px; font-weight:700; color:var(--purple); }
+.cl-vi { font-size:12px; color:var(--muted); }
+.cl-speak-btn { width:32px; height:32px; border-radius:8px; background:var(--purple-bg); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.cl-card { background:var(--card); border-radius:16px; overflow:hidden; box-shadow:0 2px 12px rgba(91,63,160,.06); }
+
+/* ─── STATS ─── */
+.stat-row { display:flex; align-items:center; gap:10px; background:var(--card); border-radius:14px; padding:11px 12px; margin-bottom:8px; box-shadow:0 2px 8px rgba(91,63,160,.04); }
+.stat-icon { font-size:22px; width:32px; text-align:center; }
+.stat-info { flex:1; }
+.stat-title { font-size:12px; font-weight:700; color:var(--purple); margin-bottom:4px; }
+.stat-nums { text-align:right; }
+.stat-learned { font-size:12px; font-weight:700; color:var(--purple); }
+.stat-mastered { font-size:10px; color:var(--orange); }
+.reset-btn { width:100%; padding:12px; margin-top:20px; border-radius:12px; border:2px solid var(--red); background:#fff; color:var(--red); font-size:13px; font-weight:700; }
+
+/* ─── TOAST ─── */
+.toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); padding:10px 20px; border-radius:12px; font-size:13px; font-weight:600; z-index:9999; opacity:0; transition:opacity .3s; pointer-events:none; max-width:90%; text-align:center; }
+.toast.show { opacity:1; }
+.toast.success { background:#D5F5E3; color:#1A7A3A; border:1px solid #27AE60; }
+.toast.error { background:#FADBD8; color:#C0392B; border:1px solid #E74C3C; }
+.toast.info { background:#D6EAF8; color:#2471A3; border:1px solid #3498DB; }
+.storage-status { display:inline-flex; align-items:center; gap:4px; font-size:11px; padding:3px 10px; border-radius:20px; }
+.storage-status.ok { background:#D5F5E3; color:#1A7A3A; }
+.storage-status.fail { background:#FADBD8; color:#C0392B; }
+
+/* ─── BACKUP ─── */
+.backup-section { margin-top:20px; padding:16px; background:var(--card); border-radius:16px; box-shadow:0 2px 12px rgba(91,63,160,.06); }
+.backup-title { font-size:14px; font-weight:700; color:var(--purple); margin-bottom:10px; }
+.backup-btns { display:flex; gap:8px; }
+.backup-btn { flex:1; padding:10px; border-radius:12px; font-size:12px; font-weight:700; }
+.backup-export { background:var(--purple-bg); color:var(--purple); border:1.5px solid var(--border); }
+.backup-import { background:#fff; color:#667EEA; border:1.5px solid #667EEA; position:relative; overflow:hidden; }
+.backup-import input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+
+/* ─── NAV ─── */
+.bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:520px; background:var(--card); border-top:1px solid var(--border); display:flex; z-index:100; padding:6px 0 env(safe-area-inset-bottom, 8px); }
+.nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 0; background:none; font-size:10px; color:var(--muted); font-weight:600; }
+.nav-btn.active { color:var(--purple); }
+.nav-icon { font-size:22px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ TOAST ═══════════ -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════ HOME ═══════════ -->
+<div id="home" class="screen active">
+  <div class="header">
+    <div>
+      <div class="header-title">한국어 단어</div>
+      <div class="header-sub">Korean Vocabulary · Sơ cấp 1 <span id="storage-badge" class="storage-status"></span></div>
+    </div>
+  </div>
+  <div class="progress-card">
+    <div class="progress-row">
+      <div><div class="p-num" id="p-learned">0</div><div class="p-label">Đã học</div></div>
+      <div><div class="p-num" id="p-due">0</div><div class="p-label">Cần ôn</div></div>
+      <div><div class="p-num" id="p-total">0</div><div class="p-label">Tổng từ</div></div>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="p-bar" style="width:0%"></div></div>
+    <div class="bar-text" id="p-pct">0% hoàn thành</div>
+    <button class="review-btn" id="review-btn" style="display:none" onclick="startReview()">🔄 Ôn tập ngay</button>
+  </div>
+  <div class="units-grid" id="units-grid"></div>
+</div>
+
+<!-- ═══════════ UNIT DETAIL ═══════════ -->
+<div id="unit-screen" class="screen">
+  <div class="top-bar">
+    <button class="back-btn" onclick="showScreen('home')">← Quay lại</button>
+    <div class="top-title" id="unit-top-title"></div>
+  </div>
+  <div class="unit-hero" id="unit-hero"></div>
+  <div id="unit-groups"></div>
+</div>
+
+<!-- ═══════════ FLASHCARD ═══════════ -->
+<div id="fc-screen" class="screen">
+  <div class="top-bar">
+    <button class="back-btn" id="fc-back-btn">← Quay lại</button>
+    <div class="top-title" id="fc-title"></div>
+  </div>
+  <div class="fc-counter" id="fc-counter"></div>
+  <div class="fc-wrapper" id="fc-wrapper">
+    <div class="fc-inner" id="fc-inner">
+      <div class="fc-face fc-front">
+        <div class="fc-emoji" id="fc-emoji"></div>
+        <div class="fc-kr" id="fc-kr"></div>
+        <div class="fc-rom" id="fc-rom"></div>
+        <button class="fc-speak" id="fc-speak-btn">🔊</button>
+        <div class="fc-hint">Nhấn để lật thẻ</div>
+      </div>
+      <div class="fc-face fc-back">
+        <div class="fc-emoji" id="fc-emoji2"></div>
+        <div class="fc-kr-sm" id="fc-kr2"></div>
+        <div class="fc-vi" id="fc-vi"></div>
+        <div class="fc-en" id="fc-en"></div>
+        <div class="fc-rom-back" id="fc-rom2"></div>
+      </div>
+    </div>
+  </div>
+  <div class="rate-row" id="fc-rates" style="display:none">
+    <button class="rate-btn rate-again" onclick="rateCard(0)">😣 Lại</button>
+    <button class="rate-btn rate-hard" onclick="rateCard(2)">🤔 Khó</button>
+    <button class="rate-btn rate-easy" onclick="rateCard(3)">😊 Nhớ</button>
+  </div>
+</div>
+
+<!-- ═══════════ QUIZ ═══════════ -->
+<div id="quiz-screen" class="screen">
+  <div class="top-bar">
+    <button class="back-btn" id="quiz-back-btn">← Quay lại</button>
+    <div class="top-title" id="quiz-title"></div>
+  </div>
+  <div class="quiz-top">
+    <div class="fc-counter" id="quiz-counter"></div>
+    <div class="quiz-score" id="quiz-score">✅ 0</div>
+  </div>
+  <div class="quiz-card">
+    <div class="quiz-mode" id="quiz-mode"></div>
+    <div class="quiz-prompt" id="quiz-prompt"></div>
+    <button class="quiz-speak" id="quiz-speak" style="display:none" onclick="speakKorean(quizState.currentPromptKr)">🔊 Nghe</button>
+  </div>
+  <div class="opts-grid" id="quiz-opts"></div>
+</div>
+
+<!-- ═══════════ CHECKLIST ═══════════ -->
+<div id="checklist-screen" class="screen">
+  <div class="top-bar">
+    <div class="top-title">📋 Danh sách từ vựng</div>
+  </div>
+  <div class="checklist-header">
+    <div class="checklist-stats" id="cl-stats"></div>
+  </div>
+  <div class="checklist-filter" id="cl-filter"></div>
+  <div id="cl-list"></div>
+</div>
+
+<!-- ═══════════ STATS ═══════════ -->
+<div id="stats-screen" class="screen">
+  <div class="top-bar">
+    <div class="top-title">📊 Thống kê</div>
+  </div>
+  <div id="stats-list"></div>
+  <div class="backup-section">
+    <div class="backup-title">💾 Sao lưu dữ liệu</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Export để backup, Import để khôi phục tiến trình</div>
+    <div class="backup-btns">
+      <button class="backup-btn backup-export" onclick="exportData()">📤 Export</button>
+      <button class="backup-btn backup-import">📥 Import<input type="file" accept=".json" onchange="importData(event)"></button>
+    </div>
+  </div>
+  <button class="reset-btn" onclick="if(confirm('Reset toàn bộ tiến trình?')){srData={};checkedWords={};saveAll();renderAll();}">🗑️ Reset tất cả</button>
+</div>
+
+<!-- ═══════════ DONE ═══════════ -->
+<div id="done-screen" class="screen">
+  <div class="done-card">
+    <div class="done-emoji" id="done-emoji">🎉</div>
+    <div class="done-title" id="done-title">Hoàn thành!</div>
+    <div class="done-sub" id="done-sub"></div>
+    <button class="done-btn" id="done-btn">← Quay lại</button>
+  </div>
+</div>
+
+<!-- ═══════════ BOTTOM NAV ═══════════ -->
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-home" onclick="showScreen('home')"><span class="nav-icon">🏠</span>Học</button>
+  <button class="nav-btn" id="nav-checklist" onclick="showScreen('checklist-screen')"><span class="nav-icon">📋</span>Từ vựng</button>
+  <button class="nav-btn" id="nav-stats" onclick="showScreen('stats-screen')"><span class="nav-icon">📊</span>Thống kê</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const UNITS=[{"id": 1, "title": "소개", "subtitle": "Giới thiệu", "icon": "👋", "groups": [{"name": "나라 Quốc gia", "words": [{"kr": "한국", "vi": "Hàn Quốc", "en": "Korea", "rom": "han-guk", "emoji": "🇰🇷"}, {"kr": "베트남", "vi": "Việt Nam", "en": "Vietnam", "rom": "be-teu-nam", "emoji": "🇻🇳"}, {"kr": "말레이시아", "vi": "Malaysia", "en": "Malaysia", "rom": "mal-le-i-si-a", "emoji": "🇲🇾"}, {"kr": "일본", "vi": "Nhật Bản", "en": "Japan", "rom": "il-bon", "emoji": "🇯🇵"}, {"kr": "미국", "vi": "Mỹ", "en": "USA", "rom": "mi-guk", "emoji": "🇺🇸"}, {"kr": "중국", "vi": "Trung Quốc", "en": "China", "rom": "jung-guk", "emoji": "🇨🇳"}, {"kr": "태국", "vi": "Thái Lan", "en": "Thailand", "rom": "tae-guk", "emoji": "🇹🇭"}, {"kr": "호주", "vi": "Úc", "en": "Australia", "rom": "ho-ju", "emoji": "🇦🇺"}, {"kr": "몽골", "vi": "Mông Cổ", "en": "Mongolia", "rom": "mong-gol", "emoji": "🇲🇳"}, {"kr": "인도네시아", "vi": "Indonesia", "en": "Indonesia", "rom": "in-do-ne-si-a", "emoji": "🇮🇩"}, {"kr": "필리핀", "vi": "Philippines", "en": "Philippines", "rom": "pil-li-pin", "emoji": "🇵🇭"}, {"kr": "인도", "vi": "Ấn Độ", "en": "India", "rom": "in-do", "emoji": "🇮🇳"}, {"kr": "영국", "vi": "Anh", "en": "England", "rom": "yeong-guk", "emoji": "🇬🇧"}, {"kr": "독일", "vi": "Đức", "en": "Germany", "rom": "dog-il", "emoji": "🇩🇪"}, {"kr": "프랑스", "vi": "Pháp", "en": "France", "rom": "peu-rang-seu", "emoji": "🇫🇷"}, {"kr": "러시아", "vi": "Nga", "en": "Russia", "rom": "reo-si-a", "emoji": "🇷🇺"}]}, {"name": "직업 Nghề nghiệp", "words": [{"kr": "학생", "vi": "học sinh", "en": "student", "rom": "hak-saeng", "emoji": "🎓"}, {"kr": "회사원", "vi": "nhân viên công ty", "en": "office worker", "rom": "hoe-sa-won", "emoji": "💼"}, {"kr": "은행원", "vi": "nhân viên ngân hàng", "en": "banker", "rom": "eun-haeng-won", "emoji": "🏦"}, {"kr": "선생님", "vi": "giáo viên", "en": "teacher", "rom": "seon-saeng-nim", "emoji": "👩‍🏫"}, {"kr": "공무원", "vi": "công chức", "en": "civil servant", "rom": "gong-mu-won", "emoji": "🏛️"}, {"kr": "의사", "vi": "bác sĩ", "en": "doctor", "rom": "ui-sa", "emoji": "👨‍⚕️"}, {"kr": "관광 가이드", "vi": "hướng dẫn viên du lịch", "en": "tour guide", "rom": "gwan-gwang ga-i-deu", "emoji": "🗺️"}, {"kr": "주부", "vi": "nội trợ", "en": "homemaker", "rom": "ju-bu", "emoji": "🏠"}, {"kr": "약사", "vi": "dược sĩ", "en": "pharmacist", "rom": "yak-sa", "emoji": "💊"}, {"kr": "운전기사", "vi": "tài xế, lái xe", "en": "driver", "rom": "un-jeon-gi-sa", "emoji": "🚗"}]}, {"name": "인사말 Lời chào", "words": [{"kr": "안녕하세요?", "vi": "Xin chào?", "en": "Hello?", "rom": "an-nyeong-ha-se-yo", "emoji": "🙋"}, {"kr": "안녕하십니까?", "vi": "Xin chào? (trịnh trọng)", "en": "Hello? (formal)", "rom": "an-nyeong-ha-sim-ni-kka", "emoji": "🙋‍♂️"}, {"kr": "안녕히 가세요", "vi": "Tạm biệt (người đi)", "en": "Goodbye (leaving)", "rom": "an-nyeong-hi ga-se-yo", "emoji": "👋"}, {"kr": "안녕히 계세요", "vi": "Tạm biệt (người ở)", "en": "Goodbye (staying)", "rom": "an-nyeong-hi gye-se-yo", "emoji": "🤚"}, {"kr": "처음 뵙겠습니다", "vi": "Rất hân hạnh", "en": "Nice to meet you", "rom": "cheo-eum boep-get-seum-ni-da", "emoji": "🤝"}, {"kr": "반갑습니다", "vi": "Rất vui được gặp", "en": "Pleased to meet you", "rom": "ban-gap-seum-ni-da", "emoji": "😊"}, {"kr": "감사합니다", "vi": "Cảm ơn", "en": "Thank you", "rom": "gam-sa-ham-ni-da", "emoji": "🙏"}, {"kr": "네", "vi": "Vâng, dạ", "en": "Yes", "rom": "ne", "emoji": "✅"}, {"kr": "아니요", "vi": "Không", "en": "No", "rom": "a-ni-yo", "emoji": "❌"}]}, {"name": "기타 Từ khác", "words": [{"kr": "한국어", "vi": "tiếng Hàn", "en": "Korean language", "rom": "han-gu-geo", "emoji": "🗣️"}, {"kr": "대학교", "vi": "trường đại học", "en": "university", "rom": "dae-hak-gyo", "emoji": "🏫"}, {"kr": "대학생", "vi": "sinh viên", "en": "university student", "rom": "dae-hak-saeng", "emoji": "🧑‍🎓"}, {"kr": "국적", "vi": "quốc tịch", "en": "nationality", "rom": "guk-jeok", "emoji": "🌍"}, {"kr": "이름", "vi": "tên", "en": "name", "rom": "i-reum", "emoji": "📛"}, {"kr": "직업", "vi": "nghề nghiệp", "en": "occupation", "rom": "jik-eop", "emoji": "💼"}, {"kr": "주소", "vi": "địa chỉ", "en": "address", "rom": "ju-so", "emoji": "📍"}, {"kr": "전화", "vi": "điện thoại", "en": "phone", "rom": "jeon-hwa", "emoji": "📞"}, {"kr": "이메일", "vi": "thư điện tử", "en": "email", "rom": "i-me-il", "emoji": "📧"}, {"kr": "저", "vi": "tôi (khiêm tốn)", "en": "I (humble)", "rom": "jeo", "emoji": "🙋"}, {"kr": "제", "vi": "của tôi", "en": "my", "rom": "je", "emoji": "👤"}, {"kr": "사람", "vi": "người", "en": "person", "rom": "sa-ram", "emoji": "🧑"}, {"kr": "학과", "vi": "bộ môn, khoa", "en": "department", "rom": "hak-gwa", "emoji": "📚"}, {"kr": "학번", "vi": "mã số sinh viên", "en": "student ID number", "rom": "hak-beon", "emoji": "🔢"}, {"kr": "학생증", "vi": "thẻ sinh viên", "en": "student card", "rom": "hak-saeng-jeung", "emoji": "🪪"}]}]}, {"id": 2, "title": "학교", "subtitle": "Trường học", "icon": "🏫", "groups": [{"name": "장소 Nơi chốn", "words": [{"kr": "학교", "vi": "trường học", "en": "school", "rom": "hak-gyo", "emoji": "🏫"}, {"kr": "도서관", "vi": "thư viện", "en": "library", "rom": "do-seo-gwan", "emoji": "📚"}, {"kr": "식당", "vi": "nhà ăn, nhà hàng", "en": "restaurant", "rom": "sik-dang", "emoji": "🍽️"}, {"kr": "호텔", "vi": "khách sạn", "en": "hotel", "rom": "ho-tel", "emoji": "🏨"}, {"kr": "극장", "vi": "nhà hát", "en": "theater", "rom": "geuk-jang", "emoji": "🎭"}, {"kr": "우체국", "vi": "bưu điện", "en": "post office", "rom": "u-che-guk", "emoji": "📮"}, {"kr": "병원", "vi": "bệnh viện", "en": "hospital", "rom": "byeong-won", "emoji": "🏥"}, {"kr": "은행", "vi": "ngân hàng", "en": "bank", "rom": "eun-haeng", "emoji": "🏦"}, {"kr": "백화점", "vi": "cửa hàng bách hoá", "en": "department store", "rom": "baek-hwa-jeom", "emoji": "🏬"}, {"kr": "약국", "vi": "hiệu thuốc", "en": "pharmacy", "rom": "yak-guk", "emoji": "💊"}, {"kr": "가게", "vi": "cửa tiệm", "en": "store", "rom": "ga-ge", "emoji": "🏪"}, {"kr": "사무실", "vi": "văn phòng", "en": "office", "rom": "sa-mu-sil", "emoji": "🖥️"}]}, {"name": "학교 시설 Cơ sở trường", "words": [{"kr": "강의실", "vi": "giảng đường", "en": "lecture room", "rom": "gang-ui-sil", "emoji": "🎓"}, {"kr": "교실", "vi": "phòng học", "en": "classroom", "rom": "gyo-sil", "emoji": "📖"}, {"kr": "화장실", "vi": "nhà vệ sinh", "en": "restroom", "rom": "hwa-jang-sil", "emoji": "🚻"}, {"kr": "휴게실", "vi": "phòng nghỉ", "en": "lounge", "rom": "hyu-ge-sil", "emoji": "☕"}, {"kr": "랩실", "vi": "phòng lab", "en": "lab room", "rom": "raep-sil", "emoji": "🔬"}, {"kr": "어학실", "vi": "phòng ngoại ngữ", "en": "language lab", "rom": "eo-hak-sil", "emoji": "🗣️"}, {"kr": "동아리방", "vi": "phòng CLB", "en": "club room", "rom": "dong-a-ri-bang", "emoji": "🎪"}, {"kr": "체육관", "vi": "nhà thi đấu", "en": "gymnasium", "rom": "che-yuk-gwan", "emoji": "🏋️"}, {"kr": "운동장", "vi": "sân vận động", "en": "playground", "rom": "un-dong-jang", "emoji": "⚽"}, {"kr": "강당", "vi": "hội trường", "en": "auditorium", "rom": "gang-dang", "emoji": "🎤"}, {"kr": "학생 식당", "vi": "nhà ăn sinh viên", "en": "cafeteria", "rom": "hak-saeng sik-dang", "emoji": "🍱"}, {"kr": "세미나실", "vi": "phòng hội thảo", "en": "seminar room", "rom": "se-mi-na-sil", "emoji": "📊"}, {"kr": "서점", "vi": "hiệu sách", "en": "bookstore", "rom": "seo-jeom", "emoji": "📕"}]}, {"name": "교실 물건 Đồ vật", "words": [{"kr": "책상", "vi": "cái bàn", "en": "desk", "rom": "chaek-sang", "emoji": "🪑"}, {"kr": "의자", "vi": "cái ghế", "en": "chair", "rom": "ui-ja", "emoji": "💺"}, {"kr": "칠판", "vi": "bảng", "en": "blackboard", "rom": "chil-pan", "emoji": "📋"}, {"kr": "문", "vi": "cửa", "en": "door", "rom": "mun", "emoji": "🚪"}, {"kr": "창문", "vi": "cửa sổ", "en": "window", "rom": "chang-mun", "emoji": "🪟"}, {"kr": "시계", "vi": "đồng hồ", "en": "clock", "rom": "si-gye", "emoji": "🕐"}, {"kr": "가방", "vi": "cặp sách", "en": "bag", "rom": "ga-bang", "emoji": "🎒"}, {"kr": "컴퓨터", "vi": "máy vi tính", "en": "computer", "rom": "keom-pyu-teo", "emoji": "💻"}, {"kr": "책", "vi": "sách", "en": "book", "rom": "chaek", "emoji": "📖"}, {"kr": "공책", "vi": "vở", "en": "notebook", "rom": "gong-chaek", "emoji": "📓"}, {"kr": "사전", "vi": "từ điển", "en": "dictionary", "rom": "sa-jeon", "emoji": "📘"}, {"kr": "지우개", "vi": "cục tẩy", "en": "eraser", "rom": "ji-u-gae", "emoji": "🧽"}, {"kr": "지도", "vi": "bản đồ", "en": "map", "rom": "ji-do", "emoji": "🗺️"}, {"kr": "펜", "vi": "bút, viết", "en": "pen", "rom": "pen", "emoji": "🖊️"}, {"kr": "필통", "vi": "hộp bút", "en": "pencil case", "rom": "pil-tong", "emoji": "✏️"}]}, {"name": "기타 Từ khác", "words": [{"kr": "거기", "vi": "ở đó", "en": "there", "rom": "geo-gi", "emoji": "👉"}, {"kr": "여기", "vi": "ở đây", "en": "here", "rom": "yeo-gi", "emoji": "📍"}, {"kr": "저기", "vi": "ở kia", "en": "over there", "rom": "jeo-gi", "emoji": "👈"}, {"kr": "이것", "vi": "cái này", "en": "this", "rom": "i-geot", "emoji": "👆"}, {"kr": "그것", "vi": "cái đó", "en": "that", "rom": "geu-geot", "emoji": "👇"}, {"kr": "저것", "vi": "cái kia", "en": "that (far)", "rom": "jeo-geot", "emoji": "🫳"}, {"kr": "있다", "vi": "có", "en": "to have/exist", "rom": "it-da", "emoji": "✅"}, {"kr": "없다", "vi": "không có", "en": "to not have", "rom": "eop-da", "emoji": "❌"}, {"kr": "많이", "vi": "nhiều", "en": "a lot", "rom": "man-i", "emoji": "📦"}, {"kr": "무엇", "vi": "cái gì", "en": "what", "rom": "mu-eot", "emoji": "❓"}, {"kr": "어디", "vi": "ở đâu", "en": "where", "rom": "eo-di", "emoji": "🔍"}, {"kr": "텔레비전", "vi": "tivi", "en": "television", "rom": "tel-le-bi-jeon", "emoji": "📺"}, {"kr": "휴대전화", "vi": "điện thoại di động", "en": "mobile phone", "rom": "hyu-dae-jeon-hwa", "emoji": "📱"}, {"kr": "라디오", "vi": "đài radio", "en": "radio", "rom": "ra-di-o", "emoji": "📻"}, {"kr": "명동", "vi": "khu Myeong Dong", "en": "Myeongdong", "rom": "myeong-dong", "emoji": "🏙️"}]}]}, {"id": 3, "title": "일상생활", "subtitle": "Sinh hoạt hàng ngày", "icon": "☀️", "groups": [{"name": "동사 Động từ", "words": [{"kr": "가다", "vi": "đi", "en": "to go", "rom": "ga-da", "emoji": "🚶"}, {"kr": "오다", "vi": "đến", "en": "to come", "rom": "o-da", "emoji": "🏃"}, {"kr": "자다", "vi": "ngủ", "en": "to sleep", "rom": "ja-da", "emoji": "😴"}, {"kr": "먹다", "vi": "ăn", "en": "to eat", "rom": "meok-da", "emoji": "🍚"}, {"kr": "마시다", "vi": "uống", "en": "to drink", "rom": "ma-si-da", "emoji": "🥤"}, {"kr": "이야기하다", "vi": "nói chuyện", "en": "to talk", "rom": "i-ya-gi-ha-da", "emoji": "💬"}, {"kr": "읽다", "vi": "đọc", "en": "to read", "rom": "ik-da", "emoji": "📖"}, {"kr": "듣다", "vi": "nghe", "en": "to listen", "rom": "deut-da", "emoji": "👂"}, {"kr": "보다", "vi": "nhìn, xem", "en": "to see/watch", "rom": "bo-da", "emoji": "👀"}, {"kr": "일하다", "vi": "làm việc", "en": "to work", "rom": "il-ha-da", "emoji": "💼"}, {"kr": "공부하다", "vi": "học", "en": "to study", "rom": "gong-bu-ha-da", "emoji": "📝"}, {"kr": "운동하다", "vi": "tập thể thao", "en": "to exercise", "rom": "un-dong-ha-da", "emoji": "🏃‍♂️"}, {"kr": "쉬다", "vi": "nghỉ ngơi", "en": "to rest", "rom": "swi-da", "emoji": "🛋️"}, {"kr": "만나다", "vi": "gặp gỡ", "en": "to meet", "rom": "man-na-da", "emoji": "🤝"}, {"kr": "사다", "vi": "mua", "en": "to buy", "rom": "sa-da", "emoji": "🛒"}, {"kr": "좋아하다", "vi": "thích", "en": "to like", "rom": "jo-a-ha-da", "emoji": "❤️"}, {"kr": "전화하다", "vi": "gọi điện thoại", "en": "to call", "rom": "jeon-hwa-ha-da", "emoji": "📱"}, {"kr": "산책하다", "vi": "đi dạo", "en": "to take a walk", "rom": "san-chaek-ha-da", "emoji": "🚶‍♀️"}, {"kr": "쇼핑하다", "vi": "mua sắm", "en": "to shop", "rom": "syo-ping-ha-da", "emoji": "🛍️"}, {"kr": "식사하다", "vi": "dùng bữa", "en": "to have a meal", "rom": "sik-sa-ha-da", "emoji": "🍽️"}]}, {"name": "형용사 Tính từ", "words": [{"kr": "크다", "vi": "to, lớn", "en": "big", "rom": "keu-da", "emoji": "🐘"}, {"kr": "작다", "vi": "nhỏ", "en": "small", "rom": "jak-da", "emoji": "🐜"}, {"kr": "많다", "vi": "nhiều", "en": "many", "rom": "man-ta", "emoji": "📦"}, {"kr": "적다", "vi": "ít", "en": "few", "rom": "jeok-da", "emoji": "🔹"}, {"kr": "좋다", "vi": "tốt", "en": "good", "rom": "jo-ta", "emoji": "👍"}, {"kr": "나쁘다", "vi": "xấu, tồi", "en": "bad", "rom": "na-ppeu-da", "emoji": "👎"}, {"kr": "재미있다", "vi": "hay, thú vị", "en": "interesting", "rom": "jae-mi-it-da", "emoji": "🎉"}, {"kr": "재미없다", "vi": "không hay", "en": "boring", "rom": "jae-mi-eop-da", "emoji": "😐"}]}, {"name": "일상 어휘 Từ hàng ngày", "words": [{"kr": "차", "vi": "trà", "en": "tea", "rom": "cha", "emoji": "🍵"}, {"kr": "커피", "vi": "cà phê", "en": "coffee", "rom": "keo-pi", "emoji": "☕"}, {"kr": "빵", "vi": "bánh mì", "en": "bread", "rom": "ppang", "emoji": "🍞"}, {"kr": "우유", "vi": "sữa", "en": "milk", "rom": "u-yu", "emoji": "🥛"}, {"kr": "영화", "vi": "phim", "en": "movie", "rom": "yeong-hwa", "emoji": "🎬"}, {"kr": "음악", "vi": "âm nhạc", "en": "music", "rom": "eum-ak", "emoji": "🎵"}, {"kr": "친구", "vi": "bạn bè", "en": "friend", "rom": "chin-gu", "emoji": "👫"}, {"kr": "신문", "vi": "báo", "en": "newspaper", "rom": "sin-mun", "emoji": "📰"}, {"kr": "누구", "vi": "ai", "en": "who", "rom": "nu-gu", "emoji": "🧑"}, {"kr": "언제", "vi": "khi nào", "en": "when", "rom": "eon-je", "emoji": "🕐"}, {"kr": "공원", "vi": "công viên", "en": "park", "rom": "gong-won", "emoji": "🌳"}, {"kr": "노래", "vi": "bài hát", "en": "song", "rom": "no-rae", "emoji": "🎵"}, {"kr": "방", "vi": "phòng", "en": "room", "rom": "bang", "emoji": "🛏️"}, {"kr": "사과", "vi": "quả táo", "en": "apple", "rom": "sa-gwa", "emoji": "🍎"}, {"kr": "시장", "vi": "chợ", "en": "market", "rom": "si-jang", "emoji": "🏪"}, {"kr": "시내", "vi": "trung tâm thành phố", "en": "downtown", "rom": "si-nae", "emoji": "🏙️"}, {"kr": "카페", "vi": "quán cà phê", "en": "café", "rom": "ka-pe", "emoji": "☕"}, {"kr": "옷", "vi": "quần áo", "en": "clothes", "rom": "ot", "emoji": "👕"}, {"kr": "여행", "vi": "du lịch", "en": "travel", "rom": "yeo-haeng", "emoji": "✈️"}, {"kr": "자주", "vi": "thường xuyên", "en": "often", "rom": "ja-ju", "emoji": "🔄"}, {"kr": "지금", "vi": "bây giờ", "en": "now", "rom": "ji-geum", "emoji": "⏰"}, {"kr": "아주", "vi": "rất", "en": "very", "rom": "a-ju", "emoji": "⭐"}, {"kr": "위", "vi": "trên", "en": "above", "rom": "wi", "emoji": "⬆️"}, {"kr": "축구를 하다", "vi": "đá bóng", "en": "play soccer", "rom": "chuk-gu-reul ha-da", "emoji": "⚽"}, {"kr": "아이스크림", "vi": "kem", "en": "ice cream", "rom": "a-i-seu-keu-rim", "emoji": "🍦"}]}]}, {"id": 4, "title": "날짜와 요일", "subtitle": "Ngày và thứ", "icon": "📅", "groups": [{"name": "요일 Ngày trong tuần", "words": [{"kr": "월요일", "vi": "thứ hai", "en": "Monday", "rom": "wol-yo-il", "emoji": "1️⃣"}, {"kr": "화요일", "vi": "thứ ba", "en": "Tuesday", "rom": "hwa-yo-il", "emoji": "2️⃣"}, {"kr": "수요일", "vi": "thứ tư", "en": "Wednesday", "rom": "su-yo-il", "emoji": "3️⃣"}, {"kr": "목요일", "vi": "thứ năm", "en": "Thursday", "rom": "mok-yo-il", "emoji": "4️⃣"}, {"kr": "금요일", "vi": "thứ sáu", "en": "Friday", "rom": "geum-yo-il", "emoji": "5️⃣"}, {"kr": "토요일", "vi": "thứ bảy", "en": "Saturday", "rom": "to-yo-il", "emoji": "6️⃣"}, {"kr": "일요일", "vi": "chủ nhật", "en": "Sunday", "rom": "il-yo-il", "emoji": "7️⃣"}]}, {"name": "시간 Thời gian", "words": [{"kr": "년", "vi": "năm", "en": "year", "rom": "nyeon", "emoji": "📅"}, {"kr": "월", "vi": "tháng", "en": "month", "rom": "wol", "emoji": "🗓️"}, {"kr": "일", "vi": "ngày", "en": "day", "rom": "il", "emoji": "📆"}, {"kr": "시", "vi": "giờ", "en": "hour/o'clock", "rom": "si", "emoji": "🕐"}, {"kr": "그저께", "vi": "hôm kia", "en": "day before yesterday", "rom": "geu-jeo-kke", "emoji": "⏪"}, {"kr": "어제", "vi": "hôm qua", "en": "yesterday", "rom": "eo-je", "emoji": "⬅️"}, {"kr": "오늘", "vi": "hôm nay", "en": "today", "rom": "o-neul", "emoji": "📌"}, {"kr": "내일", "vi": "ngày mai", "en": "tomorrow", "rom": "nae-il", "emoji": "➡️"}, {"kr": "모레", "vi": "ngày kia", "en": "day after tomorrow", "rom": "mo-re", "emoji": "⏩"}, {"kr": "작년", "vi": "năm ngoái", "en": "last year", "rom": "jak-nyeon", "emoji": "⏮️"}, {"kr": "올해", "vi": "năm nay", "en": "this year", "rom": "ol-hae", "emoji": "📌"}, {"kr": "내년", "vi": "năm sau", "en": "next year", "rom": "nae-nyeon", "emoji": "⏭️"}, {"kr": "지난달", "vi": "tháng trước", "en": "last month", "rom": "ji-nan-dal", "emoji": "⬅️"}, {"kr": "이번 달", "vi": "tháng này", "en": "this month", "rom": "i-beon dal", "emoji": "📅"}, {"kr": "다음 달", "vi": "tháng sau", "en": "next month", "rom": "da-eum dal", "emoji": "➡️"}, {"kr": "지난주", "vi": "tuần trước", "en": "last week", "rom": "ji-nan-ju", "emoji": "⬅️"}, {"kr": "이번 주", "vi": "tuần này", "en": "this week", "rom": "i-beon ju", "emoji": "📅"}, {"kr": "다음 주", "vi": "tuần sau", "en": "next week", "rom": "da-eum ju", "emoji": "➡️"}, {"kr": "평일", "vi": "ngày thường", "en": "weekday", "rom": "pyeong-il", "emoji": "📋"}, {"kr": "주말", "vi": "cuối tuần", "en": "weekend", "rom": "ju-mal", "emoji": "🎉"}]}, {"name": "기타 Từ khác", "words": [{"kr": "강사", "vi": "giảng viên", "en": "instructor", "rom": "gang-sa", "emoji": "👨‍🏫"}, {"kr": "계획표", "vi": "bảng kế hoạch", "en": "schedule", "rom": "gye-hoek-pyo", "emoji": "📋"}, {"kr": "구경하다", "vi": "ngắm, xem", "en": "to look around", "rom": "gu-gyeong-ha-da", "emoji": "👀"}, {"kr": "그리고", "vi": "và", "en": "and", "rom": "geu-ri-go", "emoji": "➕"}, {"kr": "등산", "vi": "leo núi", "en": "hiking", "rom": "deung-san", "emoji": "🧗"}, {"kr": "명절", "vi": "ngày lễ", "en": "holiday", "rom": "myeong-jeol", "emoji": "🎊"}, {"kr": "방학", "vi": "kỳ nghỉ (học sinh)", "en": "school vacation", "rom": "bang-hak", "emoji": "🏖️"}, {"kr": "산", "vi": "núi", "en": "mountain", "rom": "san", "emoji": "⛰️"}, {"kr": "설날", "vi": "ngày Tết", "en": "Lunar New Year", "rom": "seol-nal", "emoji": "🧧"}, {"kr": "숙제", "vi": "bài tập", "en": "homework", "rom": "suk-je", "emoji": "✏️"}, {"kr": "시험", "vi": "kỳ thi", "en": "exam", "rom": "si-heom", "emoji": "📝"}, {"kr": "아르바이트", "vi": "làm thêm", "en": "part-time job", "rom": "a-reu-ba-i-teu", "emoji": "💰"}, {"kr": "전화번호", "vi": "số điện thoại", "en": "phone number", "rom": "jeon-hwa-beon-ho", "emoji": "🔢"}, {"kr": "졸업하다", "vi": "tốt nghiệp", "en": "to graduate", "rom": "jol-eop-ha-da", "emoji": "🎓"}, {"kr": "층", "vi": "tầng", "en": "floor", "rom": "cheung", "emoji": "🏢"}, {"kr": "크리스마스", "vi": "Giáng sinh", "en": "Christmas", "rom": "keu-ri-seu-ma-seu", "emoji": "🎄"}, {"kr": "한글날", "vi": "ngày chữ Hangeul", "en": "Hangul Day", "rom": "han-geul-nal", "emoji": "🇰🇷"}, {"kr": "휴가", "vi": "kỳ nghỉ", "en": "vacation", "rom": "hyu-ga", "emoji": "🏝️"}, {"kr": "회의하다", "vi": "họp", "en": "to have a meeting", "rom": "hoe-ui-ha-da", "emoji": "🤝"}]}]}, {"id": 5, "title": "하루 일과", "subtitle": "Công việc trong ngày", "icon": "⏰", "groups": [{"name": "일과 Hoạt động hàng ngày", "words": [{"kr": "일어나다", "vi": "thức dậy", "en": "to wake up", "rom": "i-reo-na-da", "emoji": "⏰"}, {"kr": "이를 닦다", "vi": "đánh răng", "en": "to brush teeth", "rom": "i-reul dak-da", "emoji": "🪥"}, {"kr": "세수하다", "vi": "rửa mặt", "en": "to wash face", "rom": "se-su-ha-da", "emoji": "🧼"}, {"kr": "목욕하다", "vi": "tắm", "en": "to bathe", "rom": "mok-yok-ha-da", "emoji": "🛁"}, {"kr": "옷을 입다", "vi": "mặc quần áo", "en": "to get dressed", "rom": "os-eul ip-da", "emoji": "👔"}, {"kr": "아침을 먹다", "vi": "ăn sáng", "en": "to eat breakfast", "rom": "a-chim-eul meok-da", "emoji": "🍳"}, {"kr": "학교에 가다", "vi": "đi học", "en": "to go to school", "rom": "hak-gyo-e ga-da", "emoji": "🏫"}, {"kr": "수업하다", "vi": "lên lớp", "en": "to attend class", "rom": "su-eop-ha-da", "emoji": "📖"}, {"kr": "점심을 먹다", "vi": "ăn trưa", "en": "to eat lunch", "rom": "jeom-sim-eul meok-da", "emoji": "🍱"}, {"kr": "집에 가다", "vi": "về nhà", "en": "to go home", "rom": "jib-e ga-da", "emoji": "🏠"}, {"kr": "숙제하다", "vi": "làm bài tập", "en": "to do homework", "rom": "suk-je-ha-da", "emoji": "✏️"}, {"kr": "청소하다", "vi": "dọn vệ sinh", "en": "to clean", "rom": "cheong-so-ha-da", "emoji": "🧹"}, {"kr": "저녁을 먹다", "vi": "ăn tối", "en": "to eat dinner", "rom": "jeo-nyeok-eul meok-da", "emoji": "🍽️"}, {"kr": "텔레비전을 보다", "vi": "xem TV", "en": "to watch TV", "rom": "tel-le-bi-jeon-eul bo-da", "emoji": "📺"}]}, {"name": "시각 Giờ giấc", "words": [{"kr": "오전", "vi": "buổi sáng (AM)", "en": "AM/morning", "rom": "o-jeon", "emoji": "🌅"}, {"kr": "오후", "vi": "buổi chiều (PM)", "en": "PM/afternoon", "rom": "o-hu", "emoji": "🌇"}, {"kr": "낮", "vi": "ban ngày", "en": "daytime", "rom": "nat", "emoji": "☀️"}, {"kr": "밤", "vi": "ban đêm", "en": "night", "rom": "bam", "emoji": "🌙"}, {"kr": "아침", "vi": "buổi sáng", "en": "morning", "rom": "a-chim", "emoji": "🌅"}, {"kr": "점심", "vi": "buổi trưa", "en": "noon/lunch", "rom": "jeom-sim", "emoji": "☀️"}, {"kr": "저녁", "vi": "buổi tối", "en": "evening", "rom": "jeo-nyeok", "emoji": "🌆"}, {"kr": "새벽", "vi": "sáng sớm", "en": "dawn", "rom": "sae-byeok", "emoji": "🌄"}, {"kr": "분", "vi": "phút", "en": "minute", "rom": "bun", "emoji": "⏱️"}, {"kr": "초", "vi": "giây", "en": "second", "rom": "cho", "emoji": "⏱️"}]}, {"name": "기타 Từ khác", "words": [{"kr": "다니다", "vi": "đi lại (thường xuyên)", "en": "to commute", "rom": "da-ni-da", "emoji": "🚶"}, {"kr": "배우다", "vi": "học", "en": "to learn", "rom": "bae-u-da", "emoji": "📖"}, {"kr": "출근하다", "vi": "đi làm", "en": "to go to work", "rom": "chul-geun-ha-da", "emoji": "🏢"}, {"kr": "퇴근하다", "vi": "tan tầm", "en": "to leave work", "rom": "toe-geun-ha-da", "emoji": "🏠"}, {"kr": "시작하다", "vi": "bắt đầu", "en": "to start", "rom": "si-jak-ha-da", "emoji": "▶️"}, {"kr": "끝나다", "vi": "kết thúc", "en": "to end", "rom": "kkeut-na-da", "emoji": "⏹️"}, {"kr": "출발하다", "vi": "xuất phát", "en": "to depart", "rom": "chul-bal-ha-da", "emoji": "🚀"}, {"kr": "고향", "vi": "quê hương", "en": "hometown", "rom": "go-hyang", "emoji": "🏡"}, {"kr": "남자", "vi": "nam giới", "en": "man", "rom": "nam-ja", "emoji": "👨"}, {"kr": "여자", "vi": "phụ nữ", "en": "woman", "rom": "yeo-ja", "emoji": "👩"}, {"kr": "수업", "vi": "giờ học", "en": "class", "rom": "su-eop", "emoji": "📖"}, {"kr": "수영", "vi": "bơi lội", "en": "swimming", "rom": "su-yeong", "emoji": "🏊"}, {"kr": "집", "vi": "nhà", "en": "house", "rom": "jip", "emoji": "🏠"}, {"kr": "회사", "vi": "công ty", "en": "company", "rom": "hoe-sa", "emoji": "🏢"}, {"kr": "회의", "vi": "cuộc họp", "en": "meeting", "rom": "hoe-ui", "emoji": "🤝"}, {"kr": "운전하다", "vi": "lái xe", "en": "to drive", "rom": "un-jeon-ha-da", "emoji": "🚗"}, {"kr": "받다", "vi": "nhận", "en": "to receive", "rom": "bat-da", "emoji": "📥"}, {"kr": "밥", "vi": "cơm", "en": "rice/meal", "rom": "bap", "emoji": "🍚"}, {"kr": "부모님", "vi": "bố mẹ", "en": "parents", "rom": "bu-mo-nim", "emoji": "👨‍👩‍👧"}, {"kr": "노래방", "vi": "quán karaoke", "en": "karaoke room", "rom": "no-rae-bang", "emoji": "🎤"}, {"kr": "일기", "vi": "nhật ký", "en": "diary", "rom": "il-gi", "emoji": "📓"}, {"kr": "인터넷", "vi": "Internet", "en": "Internet", "rom": "in-teo-net", "emoji": "🌐"}]}]}, {"id": 6, "title": "주말", "subtitle": "Cuối tuần", "icon": "🎮", "groups": [{"name": "활동 Hoạt động", "words": [{"kr": "등산하다", "vi": "leo núi", "en": "to hike", "rom": "deung-san-ha-da", "emoji": "🧗"}, {"kr": "영화를 보다", "vi": "xem phim", "en": "to watch a movie", "rom": "yeong-hwa-reul bo-da", "emoji": "🎬"}, {"kr": "여행하다", "vi": "du lịch", "en": "to travel", "rom": "yeo-haeng-ha-da", "emoji": "✈️"}, {"kr": "수영하다", "vi": "bơi", "en": "to swim", "rom": "su-yeong-ha-da", "emoji": "🏊"}, {"kr": "외식하다", "vi": "ăn ngoài", "en": "to eat out", "rom": "oe-sik-ha-da", "emoji": "🍽️"}, {"kr": "친구를 만나다", "vi": "gặp bạn", "en": "to meet friends", "rom": "chin-gu-reul man-na-da", "emoji": "👫"}, {"kr": "책을 읽다", "vi": "đọc sách", "en": "to read books", "rom": "chaek-eul ik-da", "emoji": "📚"}, {"kr": "소풍가다", "vi": "đi dã ngoại", "en": "to go on a picnic", "rom": "so-pung-ga-da", "emoji": "🧺"}, {"kr": "요리하다", "vi": "nấu ăn", "en": "to cook", "rom": "yo-ri-ha-da", "emoji": "👨‍🍳"}, {"kr": "빨래하다", "vi": "giặt đồ", "en": "to do laundry", "rom": "ppal-lae-ha-da", "emoji": "🧺"}, {"kr": "노래하다", "vi": "hát", "en": "to sing", "rom": "no-rae-ha-da", "emoji": "🎤"}, {"kr": "춤을 추다", "vi": "nhảy múa", "en": "to dance", "rom": "chum-eul chu-da", "emoji": "💃"}, {"kr": "놀다", "vi": "chơi", "en": "to play", "rom": "nol-da", "emoji": "🎯"}, {"kr": "낚시", "vi": "câu cá", "en": "fishing", "rom": "nak-si", "emoji": "🎣"}]}, {"name": "thể thao & động vật", "words": [{"kr": "축구", "vi": "bóng đá", "en": "soccer", "rom": "chuk-gu", "emoji": "⚽"}, {"kr": "야구", "vi": "bóng chày", "en": "baseball", "rom": "ya-gu", "emoji": "⚾"}, {"kr": "농구", "vi": "bóng rổ", "en": "basketball", "rom": "nong-gu", "emoji": "🏀"}, {"kr": "테니스", "vi": "quần vợt", "en": "tennis", "rom": "te-ni-seu", "emoji": "🎾"}, {"kr": "골프", "vi": "golf", "en": "golf", "rom": "gol-peu", "emoji": "⛳"}, {"kr": "개", "vi": "con chó", "en": "dog", "rom": "gae", "emoji": "🐕"}, {"kr": "고양이", "vi": "con mèo", "en": "cat", "rom": "go-yang-i", "emoji": "🐱"}, {"kr": "동물", "vi": "động vật", "en": "animal", "rom": "dong-mul", "emoji": "🐾"}, {"kr": "나무", "vi": "cây", "en": "tree", "rom": "na-mu", "emoji": "🌳"}, {"kr": "새", "vi": "chim", "en": "bird", "rom": "sae", "emoji": "🐦"}]}, {"name": "thức ăn & đồ vật", "words": [{"kr": "김밥", "vi": "cơm cuộn", "en": "gimbap", "rom": "gim-bap", "emoji": "🍙"}, {"kr": "불고기", "vi": "thịt nướng", "en": "bulgogi", "rom": "bul-go-gi", "emoji": "🥩"}, {"kr": "비빔밥", "vi": "cơm trộn", "en": "bibimbap", "rom": "bi-bim-bap", "emoji": "🍲"}, {"kr": "라면", "vi": "mì gói", "en": "ramen", "rom": "ra-myeon", "emoji": "🍜"}, {"kr": "갈비", "vi": "sườn nướng", "en": "galbi", "rom": "gal-bi", "emoji": "🍖"}, {"kr": "과일", "vi": "hoa quả", "en": "fruit", "rom": "gwa-il", "emoji": "🍎"}, {"kr": "딸기", "vi": "quả dâu", "en": "strawberry", "rom": "ttal-gi", "emoji": "🍓"}, {"kr": "포도", "vi": "quả nho", "en": "grape", "rom": "po-do", "emoji": "🍇"}, {"kr": "바다", "vi": "biển", "en": "sea", "rom": "ba-da", "emoji": "🌊"}, {"kr": "가수", "vi": "ca sĩ", "en": "singer", "rom": "ga-su", "emoji": "🎤"}, {"kr": "드라마", "vi": "phim truyền hình", "en": "drama", "rom": "deu-ra-ma", "emoji": "📺"}, {"kr": "모자", "vi": "mũ, nón", "en": "hat", "rom": "mo-ja", "emoji": "🧢"}, {"kr": "바지", "vi": "quần", "en": "pants", "rom": "ba-ji", "emoji": "👖"}, {"kr": "치마", "vi": "váy", "en": "skirt", "rom": "chi-ma", "emoji": "👗"}, {"kr": "선물", "vi": "quà tặng", "en": "gift", "rom": "seon-mul", "emoji": "🎁"}, {"kr": "싫어하다", "vi": "ghét", "en": "to dislike", "rom": "sil-eo-ha-da", "emoji": "😤"}, {"kr": "피곤하다", "vi": "mệt nhọc", "en": "tired", "rom": "pi-gon-ha-da", "emoji": "😩"}, {"kr": "일찍", "vi": "sớm", "en": "early", "rom": "il-jjik", "emoji": "🌅"}]}]}, {"id": 7, "title": "물건 사기", "subtitle": "Mua sắm", "icon": "🛍️", "groups": [{"name": "분류사 Loại từ", "words": [{"kr": "개", "vi": "cái (đơn vị đếm)", "en": "unit/piece", "rom": "gae", "emoji": "1️⃣"}, {"kr": "명", "vi": "người (đơn vị)", "en": "person (counter)", "rom": "myeong", "emoji": "🧑"}, {"kr": "마리", "vi": "con (động vật)", "en": "animal counter", "rom": "ma-ri", "emoji": "🐾"}, {"kr": "잔", "vi": "chén, ly", "en": "cup/glass", "rom": "jan", "emoji": "🥤"}, {"kr": "대", "vi": "chiếc (xe, máy)", "en": "vehicle counter", "rom": "dae", "emoji": "🚗"}, {"kr": "병", "vi": "bình", "en": "bottle", "rom": "byeong", "emoji": "🍾"}, {"kr": "켤레", "vi": "đôi", "en": "pair", "rom": "kyeol-le", "emoji": "👟"}, {"kr": "권", "vi": "quyển", "en": "book counter", "rom": "gwon", "emoji": "📚"}, {"kr": "장", "vi": "trang, tờ", "en": "sheet counter", "rom": "jang", "emoji": "📄"}]}, {"name": "의류 & 식품 Quần áo & Thực phẩm", "words": [{"kr": "과일", "vi": "hoa quả", "en": "fruit", "rom": "gwa-il", "emoji": "🍎"}, {"kr": "채소", "vi": "rau", "en": "vegetable", "rom": "chae-so", "emoji": "🥬"}, {"kr": "음료수", "vi": "thức uống", "en": "beverage", "rom": "eum-ryo-su", "emoji": "🥤"}, {"kr": "과자", "vi": "bánh quy", "en": "cookie/snack", "rom": "gwa-ja", "emoji": "🍪"}, {"kr": "귤", "vi": "quả quýt", "en": "tangerine", "rom": "gyul", "emoji": "🍊"}, {"kr": "수박", "vi": "dưa hấu", "en": "watermelon", "rom": "su-bak", "emoji": "🍉"}, {"kr": "망고", "vi": "xoài", "en": "mango", "rom": "mang-go", "emoji": "🥭"}, {"kr": "구두", "vi": "giày", "en": "dress shoes", "rom": "gu-du", "emoji": "👞"}, {"kr": "신발", "vi": "giày dép", "en": "shoes", "rom": "sin-bal", "emoji": "👟"}, {"kr": "양말", "vi": "tất", "en": "socks", "rom": "yang-mal", "emoji": "🧦"}, {"kr": "넥타이", "vi": "cà vạt", "en": "necktie", "rom": "nek-ta-i", "emoji": "👔"}, {"kr": "셔츠", "vi": "áo sơ mi", "en": "shirt", "rom": "syeo-cheu", "emoji": "👕"}, {"kr": "생선", "vi": "cá", "en": "fish", "rom": "saeng-seon", "emoji": "🐟"}, {"kr": "카메라", "vi": "máy ảnh", "en": "camera", "rom": "ka-me-ra", "emoji": "📷"}]}, {"name": "쇼핑 표현 Mua sắm", "words": [{"kr": "얼마예요?", "vi": "bao nhiêu tiền?", "en": "how much?", "rom": "eol-ma-ye-yo", "emoji": "💰"}, {"kr": "어서 오세요", "vi": "xin mời vào", "en": "welcome", "rom": "eo-seo o-se-yo", "emoji": "🙏"}, {"kr": "주세요", "vi": "cho tôi", "en": "please give", "rom": "ju-se-yo", "emoji": "🤲"}, {"kr": "비싸다", "vi": "đắt", "en": "expensive", "rom": "bi-ssa-da", "emoji": "💎"}, {"kr": "싸다", "vi": "rẻ", "en": "cheap", "rom": "ssa-da", "emoji": "🏷️"}, {"kr": "깎아 주세요", "vi": "giảm giá", "en": "discount please", "rom": "kka-kka ju-se-yo", "emoji": "✂️"}, {"kr": "원", "vi": "won (tiền)", "en": "won", "rom": "won", "emoji": "₩"}, {"kr": "마트", "vi": "siêu thị nhỏ", "en": "mart", "rom": "ma-teu", "emoji": "🏪"}, {"kr": "세일", "vi": "hạ giá", "en": "sale", "rom": "se-il", "emoji": "🏷️"}, {"kr": "디자인", "vi": "thiết kế", "en": "design", "rom": "di-ja-in", "emoji": "🎨"}, {"kr": "주스", "vi": "nước hoa quả", "en": "juice", "rom": "ju-seu", "emoji": "🧃"}, {"kr": "문구점", "vi": "cửa hàng văn phòng phẩm", "en": "stationery store", "rom": "mun-gu-jeom", "emoji": "✏️"}, {"kr": "소설책", "vi": "sách tiểu thuyết", "en": "novel", "rom": "so-seol-chaek", "emoji": "📕"}]}]}, {"id": 8, "title": "음식", "subtitle": "Thức ăn", "icon": "🍲", "groups": [{"name": "한국 음식 Đồ ăn Hàn", "words": [{"kr": "국", "vi": "canh", "en": "soup", "rom": "guk", "emoji": "🥣"}, {"kr": "김치", "vi": "kimchi", "en": "kimchi", "rom": "gim-chi", "emoji": "🥬"}, {"kr": "된장찌개", "vi": "canh tương đậu", "en": "doenjang stew", "rom": "doen-jang-jji-gae", "emoji": "🍜"}, {"kr": "냉면", "vi": "mì lạnh", "en": "cold noodles", "rom": "naeng-myeon", "emoji": "🍝"}, {"kr": "떡", "vi": "bánh tteok", "en": "rice cake", "rom": "tteok", "emoji": "🍡"}, {"kr": "삼겹살", "vi": "thịt ba chỉ nướng", "en": "grilled pork belly", "rom": "sam-gyeop-sal", "emoji": "🥓"}, {"kr": "김치찌개", "vi": "canh kimchi", "en": "kimchi stew", "rom": "gim-chi-jji-gae", "emoji": "🍲"}, {"kr": "갈비탕", "vi": "súp sườn bò", "en": "galbi soup", "rom": "gal-bi-tang", "emoji": "🥘"}, {"kr": "삼계탕", "vi": "gà tần sâm", "en": "ginseng chicken soup", "rom": "sam-gye-tang", "emoji": "🍗"}, {"kr": "볶음밥", "vi": "cơm chiên", "en": "fried rice", "rom": "bok-keum-bap", "emoji": "🍚"}, {"kr": "국수", "vi": "mì, bún", "en": "noodles", "rom": "guk-su", "emoji": "🍜"}, {"kr": "떡볶이", "vi": "bánh gạo cay", "en": "tteokbokki", "rom": "tteok-bok-ki", "emoji": "🌶️"}, {"kr": "콜라", "vi": "coca cola", "en": "cola", "rom": "kol-la", "emoji": "🥤"}, {"kr": "케이크", "vi": "bánh kem", "en": "cake", "rom": "ke-i-keu", "emoji": "🎂"}]}, {"name": "맛 Vị", "words": [{"kr": "맛있다", "vi": "ngon", "en": "delicious", "rom": "ma-sit-da", "emoji": "😋"}, {"kr": "맛없다", "vi": "dở", "en": "not tasty", "rom": "ma-deop-da", "emoji": "😖"}, {"kr": "달다", "vi": "ngọt", "en": "sweet", "rom": "dal-da", "emoji": "🍬"}, {"kr": "쓰다", "vi": "đắng", "en": "bitter", "rom": "sseu-da", "emoji": "☕"}, {"kr": "짜다", "vi": "mặn", "en": "salty", "rom": "jja-da", "emoji": "🧂"}, {"kr": "시다", "vi": "chua", "en": "sour", "rom": "si-da", "emoji": "🍋"}, {"kr": "맵다", "vi": "cay", "en": "spicy", "rom": "maep-da", "emoji": "🌶️"}, {"kr": "싱겁다", "vi": "nhạt", "en": "bland", "rom": "sing-geop-da", "emoji": "💧"}]}, {"name": "nhà hàng Từ nhà hàng", "words": [{"kr": "숟가락", "vi": "thìa, muỗng", "en": "spoon", "rom": "sut-ga-rak", "emoji": "🥄"}, {"kr": "젓가락", "vi": "đũa", "en": "chopsticks", "rom": "jeot-ga-rak", "emoji": "🥢"}, {"kr": "메뉴", "vi": "thực đơn", "en": "menu", "rom": "me-nyu", "emoji": "📋"}, {"kr": "컵", "vi": "cốc, ly", "en": "cup", "rom": "keop", "emoji": "🥤"}, {"kr": "종업원", "vi": "nhân viên phục vụ", "en": "waiter", "rom": "jong-eop-won", "emoji": "🧑‍🍳"}, {"kr": "손님", "vi": "khách", "en": "customer", "rom": "son-nim", "emoji": "🧑"}, {"kr": "주문하다", "vi": "gọi món", "en": "to order", "rom": "ju-mun-ha-da", "emoji": "📝"}, {"kr": "계산하다", "vi": "tính tiền", "en": "to pay", "rom": "gye-san-ha-da", "emoji": "💰"}, {"kr": "영수증", "vi": "hóa đơn", "en": "receipt", "rom": "yeong-su-jeung", "emoji": "🧾"}, {"kr": "음식", "vi": "thức ăn", "en": "food", "rom": "eum-sik", "emoji": "🍽️"}, {"kr": "물", "vi": "nước", "en": "water", "rom": "mul", "emoji": "💧"}, {"kr": "반찬", "vi": "món ăn phụ", "en": "side dish", "rom": "ban-chan", "emoji": "🍱"}, {"kr": "소금", "vi": "muối", "en": "salt", "rom": "so-geum", "emoji": "🧂"}, {"kr": "녹차", "vi": "trà xanh", "en": "green tea", "rom": "nok-cha", "emoji": "🍵"}, {"kr": "인삼차", "vi": "trà sâm", "en": "ginseng tea", "rom": "in-sam-cha", "emoji": "🍵"}, {"kr": "만들다", "vi": "làm, tạo", "en": "to make", "rom": "man-deul-da", "emoji": "🛠️"}, {"kr": "앉다", "vi": "ngồi", "en": "to sit", "rom": "an-da", "emoji": "💺"}, {"kr": "주다", "vi": "cho", "en": "to give", "rom": "ju-da", "emoji": "🤲"}, {"kr": "항상", "vi": "luôn luôn", "en": "always", "rom": "hang-sang", "emoji": "🔄"}, {"kr": "특히", "vi": "đặc biệt", "en": "especially", "rom": "teuk-hi", "emoji": "⭐"}, {"kr": "좀", "vi": "một chút", "en": "a little", "rom": "jom", "emoji": "🤏"}, {"kr": "더", "vi": "thêm, nữa", "en": "more", "rom": "deo", "emoji": "➕"}, {"kr": "기다리다", "vi": "chờ đợi", "en": "to wait", "rom": "gi-da-ri-da", "emoji": "⏳"}]}]}, {"id": 9, "title": "집", "subtitle": "Nhà cửa", "icon": "🏠", "groups": [{"name": "위치 Vị trí", "words": [{"kr": "위", "vi": "trên", "en": "above", "rom": "wi", "emoji": "⬆️"}, {"kr": "아래", "vi": "dưới", "en": "below", "rom": "a-rae", "emoji": "⬇️"}, {"kr": "안", "vi": "trong", "en": "inside", "rom": "an", "emoji": "📥"}, {"kr": "밖", "vi": "ngoài", "en": "outside", "rom": "bak", "emoji": "📤"}, {"kr": "옆", "vi": "bên cạnh", "en": "beside", "rom": "yeop", "emoji": "↔️"}, {"kr": "사이", "vi": "giữa", "en": "between", "rom": "sa-i", "emoji": "↕️"}, {"kr": "앞", "vi": "trước", "en": "front", "rom": "ap", "emoji": "⏩"}, {"kr": "뒤", "vi": "sau", "en": "back", "rom": "dwi", "emoji": "⏪"}, {"kr": "왼쪽", "vi": "bên trái", "en": "left", "rom": "oen-jjok", "emoji": "⬅️"}, {"kr": "오른쪽", "vi": "bên phải", "en": "right", "rom": "o-reun-jjok", "emoji": "➡️"}, {"kr": "양쪽", "vi": "hai phía", "en": "both sides", "rom": "yang-jjok", "emoji": "↔️"}, {"kr": "건너편", "vi": "đối diện", "en": "opposite side", "rom": "geon-neo-pyeon", "emoji": "🔄"}, {"kr": "똑바로", "vi": "thẳng", "en": "straight", "rom": "ttok-ba-ro", "emoji": "⬆️"}, {"kr": "동", "vi": "đông", "en": "east", "rom": "dong", "emoji": "🧭"}, {"kr": "서", "vi": "tây", "en": "west", "rom": "seo", "emoji": "🧭"}, {"kr": "남", "vi": "nam", "en": "south", "rom": "nam", "emoji": "🧭"}, {"kr": "북", "vi": "bắc", "en": "north", "rom": "buk", "emoji": "🧭"}]}, {"name": "방 & 가구 Phòng & Nội thất", "words": [{"kr": "주택", "vi": "nhà riêng", "en": "house", "rom": "ju-taek", "emoji": "🏠"}, {"kr": "아파트", "vi": "chung cư", "en": "apartment", "rom": "a-pa-teu", "emoji": "🏢"}, {"kr": "거실", "vi": "phòng khách", "en": "living room", "rom": "geo-sil", "emoji": "🛋️"}, {"kr": "부엌", "vi": "nhà bếp", "en": "kitchen", "rom": "bu-eok", "emoji": "🍳"}, {"kr": "침실", "vi": "phòng ngủ", "en": "bedroom", "rom": "chim-sil", "emoji": "🛌"}, {"kr": "현관", "vi": "lối vào", "en": "entrance", "rom": "hyeon-gwan", "emoji": "🚪"}, {"kr": "베란다", "vi": "ban công", "en": "balcony", "rom": "be-ran-da", "emoji": "🌿"}, {"kr": "세탁실", "vi": "phòng giặt", "en": "laundry room", "rom": "se-tak-sil", "emoji": "🧺"}, {"kr": "침대", "vi": "giường", "en": "bed", "rom": "chim-dae", "emoji": "🛏️"}, {"kr": "소파", "vi": "ghế sofa", "en": "sofa", "rom": "so-pa", "emoji": "🛋️"}, {"kr": "냉장고", "vi": "tủ lạnh", "en": "fridge", "rom": "naeng-jang-go", "emoji": "🧊"}, {"kr": "세탁기", "vi": "máy giặt", "en": "washing machine", "rom": "se-tak-gi", "emoji": "🧺"}, {"kr": "에어컨", "vi": "điều hòa", "en": "AC", "rom": "e-eo-keon", "emoji": "❄️"}, {"kr": "옷장", "vi": "tủ quần áo", "en": "wardrobe", "rom": "ot-jang", "emoji": "👚"}, {"kr": "책장", "vi": "tủ sách", "en": "bookshelf", "rom": "chaek-jang", "emoji": "📚"}, {"kr": "식탁", "vi": "bàn ăn", "en": "dining table", "rom": "sik-tak", "emoji": "🍽️"}, {"kr": "신발장", "vi": "tủ giày", "en": "shoe cabinet", "rom": "sin-bal-jang", "emoji": "👟"}]}, {"name": "기타 Từ khác", "words": [{"kr": "기숙사", "vi": "ký túc xá", "en": "dormitory", "rom": "gi-suk-sa", "emoji": "🏢"}, {"kr": "하숙집", "vi": "nhà trọ", "en": "boarding house", "rom": "ha-suk-jip", "emoji": "🏠"}, {"kr": "경찰서", "vi": "sở cảnh sát", "en": "police station", "rom": "gyeong-chal-seo", "emoji": "🚔"}, {"kr": "박물관", "vi": "viện bảo tàng", "en": "museum", "rom": "bak-mul-gwan", "emoji": "🏛️"}, {"kr": "슈퍼마켓", "vi": "siêu thị", "en": "supermarket", "rom": "syu-peo-ma-ket", "emoji": "🛒"}, {"kr": "빵집", "vi": "tiệm bánh", "en": "bakery", "rom": "ppang-jip", "emoji": "🍞"}, {"kr": "꽃집", "vi": "tiệm hoa", "en": "flower shop", "rom": "kkot-jip", "emoji": "💐"}, {"kr": "미용실", "vi": "tiệm làm tóc", "en": "hair salon", "rom": "mi-yong-sil", "emoji": "💇"}, {"kr": "편리하다", "vi": "tiện lợi", "en": "convenient", "rom": "pyeon-ri-ha-da", "emoji": "👍"}, {"kr": "불편하다", "vi": "bất tiện", "en": "inconvenient", "rom": "bul-pyeon-ha-da", "emoji": "👎"}, {"kr": "편하다", "vi": "thoải mái", "en": "comfortable", "rom": "pyeon-ha-da", "emoji": "😌"}, {"kr": "복잡하다", "vi": "phức tạp", "en": "complicated", "rom": "bok-jap-ha-da", "emoji": "🤯"}, {"kr": "친절하다", "vi": "thân thiện", "en": "kind", "rom": "chin-jeol-ha-da", "emoji": "😊"}, {"kr": "혼자", "vi": "một mình", "en": "alone", "rom": "hon-ja", "emoji": "🧑"}, {"kr": "정원", "vi": "vườn", "en": "garden", "rom": "jeong-won", "emoji": "🌷"}, {"kr": "사용하다", "vi": "sử dụng", "en": "to use", "rom": "sa-yong-ha-da", "emoji": "🔧"}]}]}, {"id": 10, "title": "가족", "subtitle": "Gia đình", "icon": "👨‍👩‍👧‍👦", "groups": [{"name": "가족 호칭 Thành viên gia đình", "words": [{"kr": "할아버지", "vi": "ông nội", "en": "grandfather", "rom": "hal-a-beo-ji", "emoji": "👴"}, {"kr": "할머니", "vi": "bà nội", "en": "grandmother", "rom": "hal-meo-ni", "emoji": "👵"}, {"kr": "외할아버지", "vi": "ông ngoại", "en": "maternal grandfather", "rom": "oe-hal-a-beo-ji", "emoji": "👴"}, {"kr": "외할머니", "vi": "bà ngoại", "en": "maternal grandmother", "rom": "oe-hal-meo-ni", "emoji": "👵"}, {"kr": "아버지", "vi": "bố (trang trọng)", "en": "father", "rom": "a-beo-ji", "emoji": "👨"}, {"kr": "어머니", "vi": "mẹ (trang trọng)", "en": "mother", "rom": "eo-meo-ni", "emoji": "👩"}, {"kr": "아빠", "vi": "bố, ba", "en": "dad", "rom": "a-ppa", "emoji": "👨"}, {"kr": "엄마", "vi": "mẹ, má", "en": "mom", "rom": "eom-ma", "emoji": "👩"}, {"kr": "오빠", "vi": "anh trai (nữ gọi)", "en": "older brother (f)", "rom": "o-ppa", "emoji": "🧑"}, {"kr": "언니", "vi": "chị gái (nữ gọi)", "en": "older sister (f)", "rom": "eon-ni", "emoji": "👩"}, {"kr": "형", "vi": "anh trai (nam gọi)", "en": "older brother (m)", "rom": "hyeong", "emoji": "👦"}, {"kr": "누나", "vi": "chị gái (nam gọi)", "en": "older sister (m)", "rom": "nu-na", "emoji": "👧"}, {"kr": "남동생", "vi": "em trai", "en": "younger brother", "rom": "nam-dong-saeng", "emoji": "👦"}, {"kr": "여동생", "vi": "em gái", "en": "younger sister", "rom": "yeo-dong-saeng", "emoji": "👧"}, {"kr": "나", "vi": "tôi", "en": "I/me", "rom": "na", "emoji": "🙋"}, {"kr": "아들", "vi": "con trai", "en": "son", "rom": "a-deul", "emoji": "👦"}, {"kr": "딸", "vi": "con gái", "en": "daughter", "rom": "ttal", "emoji": "👧"}, {"kr": "남편", "vi": "chồng", "en": "husband", "rom": "nam-pyeon", "emoji": "👨"}, {"kr": "아내", "vi": "vợ", "en": "wife", "rom": "a-nae", "emoji": "👩"}]}, {"name": "직업 & 기타 Nghề nghiệp & Khác", "words": [{"kr": "교수", "vi": "giáo sư", "en": "professor", "rom": "gyo-su", "emoji": "👨‍🏫"}, {"kr": "연구원", "vi": "nghiên cứu viên", "en": "researcher", "rom": "yeon-gu-won", "emoji": "🔬"}, {"kr": "군인", "vi": "bộ đội", "en": "soldier", "rom": "gun-in", "emoji": "💂"}, {"kr": "사업가", "vi": "doanh nhân", "en": "businessman", "rom": "sa-eop-ga", "emoji": "💼"}, {"kr": "변호사", "vi": "luật sư", "en": "lawyer", "rom": "byeon-ho-sa", "emoji": "⚖️"}, {"kr": "경찰관", "vi": "cảnh sát", "en": "police officer", "rom": "gyeong-chal-gwan", "emoji": "👮"}, {"kr": "통역사", "vi": "thông dịch viên", "en": "interpreter", "rom": "tong-yeok-sa", "emoji": "🗣️"}, {"kr": "농부", "vi": "nông dân", "en": "farmer", "rom": "nong-bu", "emoji": "👨‍🌾"}, {"kr": "강아지", "vi": "chó con", "en": "puppy", "rom": "gang-a-ji", "emoji": "🐕"}, {"kr": "결혼식", "vi": "lễ cưới", "en": "wedding", "rom": "gyeol-hon-sik", "emoji": "💒"}, {"kr": "삼촌", "vi": "chú, cậu", "en": "uncle", "rom": "sam-chon", "emoji": "👨"}, {"kr": "고모", "vi": "cô", "en": "aunt (paternal)", "rom": "go-mo", "emoji": "👩"}, {"kr": "사촌", "vi": "anh chị em họ", "en": "cousin", "rom": "sa-chon", "emoji": "🧑"}, {"kr": "큰아버지", "vi": "bác trai", "en": "uncle (elder)", "rom": "keun-a-beo-ji", "emoji": "👨"}, {"kr": "출장을 가다", "vi": "đi công tác", "en": "go on business trip", "rom": "chul-jang-eul ga-da", "emoji": "✈️"}, {"kr": "열심히", "vi": "chăm chỉ", "en": "hard/diligently", "rom": "yeol-sim-hi", "emoji": "💪"}, {"kr": "나이", "vi": "tuổi", "en": "age", "rom": "na-i", "emoji": "🔢"}, {"kr": "생신", "vi": "sinh nhật (kính ngữ)", "en": "birthday (hon.)", "rom": "saeng-sin", "emoji": "🎂"}]}]}, {"id": 11, "title": "날씨", "subtitle": "Thời tiết", "icon": "🌤️", "groups": [{"name": "날씨 Thời tiết", "words": [{"kr": "봄", "vi": "mùa xuân", "en": "spring", "rom": "bom", "emoji": "🌸"}, {"kr": "여름", "vi": "mùa hè", "en": "summer", "rom": "yeo-reum", "emoji": "☀️"}, {"kr": "가을", "vi": "mùa thu", "en": "autumn", "rom": "ga-eul", "emoji": "🍂"}, {"kr": "겨울", "vi": "mùa đông", "en": "winter", "rom": "gyeo-ul", "emoji": "⛄"}, {"kr": "따뜻하다", "vi": "ấm áp", "en": "warm", "rom": "tta-tteut-ha-da", "emoji": "☀️"}, {"kr": "덥다", "vi": "nóng", "en": "hot", "rom": "deop-da", "emoji": "🥵"}, {"kr": "쌀쌀하다", "vi": "se se lạnh", "en": "chilly", "rom": "ssal-ssal-ha-da", "emoji": "🌬️"}, {"kr": "춥다", "vi": "lạnh", "en": "cold", "rom": "chup-da", "emoji": "🥶"}, {"kr": "시원하다", "vi": "mát mẻ", "en": "cool", "rom": "si-won-ha-da", "emoji": "🌬️"}, {"kr": "비가 오다", "vi": "trời mưa", "en": "to rain", "rom": "bi-ga o-da", "emoji": "🌧️"}, {"kr": "눈이 오다", "vi": "tuyết rơi", "en": "to snow", "rom": "nun-i o-da", "emoji": "❄️"}, {"kr": "맑다", "vi": "trong, quang", "en": "clear", "rom": "mak-da", "emoji": "🌞"}, {"kr": "흐리다", "vi": "u ám", "en": "cloudy", "rom": "heu-ri-da", "emoji": "☁️"}, {"kr": "바람이 불다", "vi": "gió thổi", "en": "wind blows", "rom": "ba-ram-i bul-da", "emoji": "💨"}, {"kr": "구름이 끼다", "vi": "nhiều mây", "en": "cloudy", "rom": "gu-reum-i kki-da", "emoji": "☁️"}]}, {"name": "기타 Từ khác", "words": [{"kr": "해", "vi": "mặt trời", "en": "sun", "rom": "hae", "emoji": "☀️"}, {"kr": "비", "vi": "mưa", "en": "rain", "rom": "bi", "emoji": "🌧️"}, {"kr": "눈", "vi": "tuyết", "en": "snow", "rom": "nun", "emoji": "❄️"}, {"kr": "구름", "vi": "mây", "en": "cloud", "rom": "gu-reum", "emoji": "☁️"}, {"kr": "기온", "vi": "nhiệt độ", "en": "temperature", "rom": "gi-on", "emoji": "🌡️"}, {"kr": "우산", "vi": "ô, dù", "en": "umbrella", "rom": "u-san", "emoji": "☂️"}, {"kr": "장갑", "vi": "găng tay", "en": "gloves", "rom": "jang-gap", "emoji": "🧤"}, {"kr": "목도리", "vi": "khăn quàng cổ", "en": "scarf", "rom": "mok-do-ri", "emoji": "🧣"}, {"kr": "부츠", "vi": "giày bốt", "en": "boots", "rom": "bu-cheu", "emoji": "🥾"}, {"kr": "반바지", "vi": "quần soóc", "en": "shorts", "rom": "ban-ba-ji", "emoji": "🩳"}, {"kr": "입다", "vi": "mặc", "en": "to wear", "rom": "ip-da", "emoji": "👕"}, {"kr": "하늘", "vi": "bầu trời", "en": "sky", "rom": "ha-neul", "emoji": "🌌"}, {"kr": "호수", "vi": "hồ", "en": "lake", "rom": "ho-su", "emoji": "🏞️"}, {"kr": "단풍", "vi": "lá phong", "en": "autumn leaves", "rom": "dan-pung", "emoji": "🍁"}, {"kr": "깨끗하다", "vi": "sạch sẽ", "en": "clean", "rom": "kkae-kkeut-ha-da", "emoji": "✨"}, {"kr": "아름답다", "vi": "đẹp", "en": "beautiful", "rom": "a-reum-dap-da", "emoji": "🌺"}, {"kr": "시끄럽다", "vi": "ồn ào", "en": "noisy", "rom": "si-kkeu-reop-da", "emoji": "📢"}, {"kr": "좁다", "vi": "hẹp", "en": "narrow", "rom": "jop-da", "emoji": "↔️"}, {"kr": "필요하다", "vi": "cần thiết", "en": "necessary", "rom": "pil-yo-ha-da", "emoji": "❗"}, {"kr": "도와주다", "vi": "giúp đỡ", "en": "to help", "rom": "do-wa-ju-da", "emoji": "🤝"}, {"kr": "스키", "vi": "trượt tuyết", "en": "skiing", "rom": "seu-ki", "emoji": "⛷️"}]}]}, {"id": 12, "title": "전화", "subtitle": "Điện thoại", "icon": "📱", "groups": [{"name": "전화 종류 Loại điện thoại", "words": [{"kr": "전화", "vi": "điện thoại", "en": "phone", "rom": "jeon-hwa", "emoji": "📞"}, {"kr": "집 전화", "vi": "điện thoại nhà", "en": "home phone", "rom": "jip jeon-hwa", "emoji": "☎️"}, {"kr": "공중전화", "vi": "điện thoại công cộng", "en": "public phone", "rom": "gong-jung-jeon-hwa", "emoji": "📞"}, {"kr": "휴대전화", "vi": "ĐTDĐ", "en": "mobile phone", "rom": "hyu-dae-jeon-hwa", "emoji": "📱"}, {"kr": "전화번호", "vi": "số điện thoại", "en": "phone number", "rom": "jeon-hwa-beon-ho", "emoji": "🔢"}, {"kr": "연락처", "vi": "số liên lạc", "en": "contact info", "rom": "yeol-lak-cheo", "emoji": "📇"}, {"kr": "국제전화", "vi": "ĐT quốc tế", "en": "international call", "rom": "guk-je-jeon-hwa", "emoji": "🌍"}]}, {"name": "전화 동작 Hành động", "words": [{"kr": "전화를 걸다", "vi": "gọi điện", "en": "to make a call", "rom": "jeon-hwa-reul geol-da", "emoji": "📱"}, {"kr": "전화를 받다", "vi": "nhận điện thoại", "en": "to answer phone", "rom": "jeon-hwa-reul bat-da", "emoji": "📞"}, {"kr": "전화를 끊다", "vi": "cúp máy", "en": "to hang up", "rom": "jeon-hwa-reul kkeun-da", "emoji": "📵"}, {"kr": "문자메시지를 보내다", "vi": "gửi tin nhắn", "en": "to send text", "rom": "mun-ja-me-si-ji-reul bo-nae-da", "emoji": "💬"}, {"kr": "답장을 보내다", "vi": "gửi tin trả lời", "en": "to reply", "rom": "dap-jang-eul bo-nae-da", "emoji": "↩️"}]}, {"name": "전화 표현 Mẫu câu", "words": [{"kr": "여보세요?", "vi": "Alo?", "en": "Hello? (phone)", "rom": "yeo-bo-se-yo", "emoji": "👂"}, {"kr": "잠깐만요", "vi": "chờ một chút", "en": "wait a moment", "rom": "jam-kkan-man-yo", "emoji": "✋"}, {"kr": "다시 전화하다", "vi": "gọi lại", "en": "to call back", "rom": "da-si jeon-hwa-ha-da", "emoji": "🔄"}, {"kr": "메시지", "vi": "tin nhắn", "en": "message", "rom": "me-si-ji", "emoji": "✉️"}, {"kr": "연락하다", "vi": "liên lạc", "en": "to contact", "rom": "yeol-lak-ha-da", "emoji": "📨"}, {"kr": "약속", "vi": "cuộc hẹn", "en": "appointment", "rom": "yak-sok", "emoji": "📅"}, {"kr": "대사관", "vi": "đại sứ quán", "en": "embassy", "rom": "dae-sa-gwan", "emoji": "🏛️"}, {"kr": "역사", "vi": "lịch sử", "en": "history", "rom": "yeok-sa", "emoji": "📜"}, {"kr": "사장님", "vi": "giám đốc", "en": "boss", "rom": "sa-jang-nim", "emoji": "👔"}, {"kr": "짐", "vi": "hành lý", "en": "luggage", "rom": "jim", "emoji": "🧳"}, {"kr": "소리", "vi": "âm thanh", "en": "sound", "rom": "so-ri", "emoji": "🔊"}, {"kr": "맞다", "vi": "đúng", "en": "correct", "rom": "mat-da", "emoji": "✅"}, {"kr": "남기다", "vi": "để lại", "en": "to leave behind", "rom": "nam-gi-da", "emoji": "📝"}, {"kr": "정하다", "vi": "quyết định", "en": "to decide", "rom": "jeong-ha-da", "emoji": "✔️"}, {"kr": "들어오다", "vi": "đi vào", "en": "to come in", "rom": "deul-eo-o-da", "emoji": "🚪"}]}]}, {"id": 13, "title": "생일", "subtitle": "Sinh nhật", "icon": "🎂", "groups": [{"name": "축하 Chúc mừng", "words": [{"kr": "생일", "vi": "sinh nhật", "en": "birthday", "rom": "saeng-il", "emoji": "🎂"}, {"kr": "카드", "vi": "thiệp", "en": "card", "rom": "ka-deu", "emoji": "💌"}, {"kr": "케이크", "vi": "bánh kem", "en": "cake", "rom": "ke-i-keu", "emoji": "🎂"}, {"kr": "잔치", "vi": "tiệc", "en": "feast/party", "rom": "jan-chi", "emoji": "🥳"}, {"kr": "초대", "vi": "mời", "en": "invitation", "rom": "cho-dae", "emoji": "💌"}, {"kr": "축하 노래", "vi": "bài hát chúc mừng", "en": "celebration song", "rom": "chuk-ha no-rae", "emoji": "🎶"}, {"kr": "선물을 주다", "vi": "tặng quà", "en": "to give a gift", "rom": "seon-mul-eul ju-da", "emoji": "🎁"}, {"kr": "선물을 받다", "vi": "nhận quà", "en": "to receive a gift", "rom": "seon-mul-eul bat-da", "emoji": "🎁"}, {"kr": "선물을 고르다", "vi": "chọn quà", "en": "to choose a gift", "rom": "seon-mul-eul go-reu-da", "emoji": "🛍️"}]}, {"name": "quà tặng & phụ kiện", "words": [{"kr": "지갑", "vi": "cái ví", "en": "wallet", "rom": "ji-gap", "emoji": "👛"}, {"kr": "화장품", "vi": "mỹ phẩm", "en": "cosmetics", "rom": "hwa-jang-pum", "emoji": "💄"}, {"kr": "손수건", "vi": "khăn tay", "en": "handkerchief", "rom": "son-su-geon", "emoji": "🤧"}, {"kr": "귀걸이", "vi": "hoa tai", "en": "earrings", "rom": "gwi-geol-i", "emoji": "💎"}, {"kr": "목걸이", "vi": "dây chuyền", "en": "necklace", "rom": "mok-geol-i", "emoji": "📿"}, {"kr": "반지", "vi": "nhẫn", "en": "ring", "rom": "ban-ji", "emoji": "💍"}, {"kr": "꽃다발", "vi": "bó hoa", "en": "bouquet", "rom": "kkot-da-bal", "emoji": "💐"}, {"kr": "향수", "vi": "nước hoa", "en": "perfume", "rom": "hyang-su", "emoji": "🌸"}, {"kr": "스웨터", "vi": "áo len", "en": "sweater", "rom": "seu-we-teo", "emoji": "🧥"}]}, {"name": "tính từ & từ khác", "words": [{"kr": "가볍다", "vi": "nhẹ", "en": "light", "rom": "ga-byeop-da", "emoji": "🪶"}, {"kr": "무겁다", "vi": "nặng", "en": "heavy", "rom": "mu-geop-da", "emoji": "🏋️"}, {"kr": "길다", "vi": "dài", "en": "long", "rom": "gil-da", "emoji": "📏"}, {"kr": "짧다", "vi": "ngắn", "en": "short", "rom": "jjap-da", "emoji": "📐"}, {"kr": "행복하다", "vi": "hạnh phúc", "en": "happy", "rom": "haeng-bok-ha-da", "emoji": "😊"}, {"kr": "웃다", "vi": "cười", "en": "to laugh", "rom": "ut-da", "emoji": "😄"}, {"kr": "부르다", "vi": "gọi, hát", "en": "to call/sing", "rom": "bu-reu-da", "emoji": "🎤"}, {"kr": "꼭", "vi": "nhất định", "en": "must/definitely", "rom": "kkok", "emoji": "❗"}, {"kr": "참", "vi": "rất, thật", "en": "really", "rom": "cham", "emoji": "⭐"}, {"kr": "먼저", "vi": "trước", "en": "first", "rom": "meon-jeo", "emoji": "1️⃣"}, {"kr": "오래간만", "vi": "lâu ngày không gặp", "en": "long time no see", "rom": "o-rae-gan-man", "emoji": "👋"}, {"kr": "환갑", "vi": "tiệc mừng thọ 60", "en": "60th birthday", "rom": "hwan-gap", "emoji": "🎊"}, {"kr": "피자", "vi": "bánh pizza", "en": "pizza", "rom": "pi-ja", "emoji": "🍕"}, {"kr": "스파게티", "vi": "mì Ý", "en": "spaghetti", "rom": "seu-pa-ge-ti", "emoji": "🍝"}, {"kr": "장미", "vi": "hoa hồng", "en": "rose", "rom": "jang-mi", "emoji": "🌹"}]}]}, {"id": 14, "title": "취미", "subtitle": "Sở thích", "icon": "🎨", "groups": [{"name": "운동 Thể thao", "words": [{"kr": "취미", "vi": "sở thích", "en": "hobby", "rom": "chwi-mi", "emoji": "🎯"}, {"kr": "경기", "vi": "trận đấu", "en": "match/game", "rom": "gyeong-gi", "emoji": "🏟️"}, {"kr": "배구", "vi": "bóng chuyền", "en": "volleyball", "rom": "bae-gu", "emoji": "🏐"}, {"kr": "탁구", "vi": "bóng bàn", "en": "table tennis", "rom": "tak-gu", "emoji": "🏓"}, {"kr": "배드민턴", "vi": "cầu lông", "en": "badminton", "rom": "bae-deu-min-teon", "emoji": "🏸"}, {"kr": "태권도", "vi": "Taekwondo", "en": "Taekwondo", "rom": "tae-gwon-do", "emoji": "🥋"}, {"kr": "요가", "vi": "yoga", "en": "yoga", "rom": "yo-ga", "emoji": "🧘"}, {"kr": "마라톤", "vi": "chạy marathon", "en": "marathon", "rom": "ma-ra-ton", "emoji": "🏃"}, {"kr": "스케이트", "vi": "trượt băng", "en": "skating", "rom": "seu-ke-i-teu", "emoji": "⛸️"}, {"kr": "볼링", "vi": "bowling", "en": "bowling", "rom": "bol-ling", "emoji": "🎳"}, {"kr": "조깅", "vi": "chạy bộ", "en": "jogging", "rom": "jo-ging", "emoji": "🏃‍♀️"}]}, {"name": "취미 활동 Hoạt động sở thích", "words": [{"kr": "독서", "vi": "đọc sách", "en": "reading", "rom": "dok-seo", "emoji": "📚"}, {"kr": "사진 찍기", "vi": "chụp ảnh", "en": "photography", "rom": "sa-jin jjik-gi", "emoji": "📸"}, {"kr": "그림 그리기", "vi": "vẽ tranh", "en": "drawing", "rom": "geu-rim geu-ri-gi", "emoji": "🎨"}, {"kr": "음악 감상", "vi": "nghe nhạc", "en": "listening to music", "rom": "eum-ak gam-sang", "emoji": "🎵"}, {"kr": "우표 수집", "vi": "sưu tập tem", "en": "stamp collecting", "rom": "u-pyo su-jip", "emoji": "📮"}, {"kr": "컴퓨터 게임", "vi": "chơi game", "en": "computer games", "rom": "keom-pyu-teo ge-im", "emoji": "🎮"}, {"kr": "피아노", "vi": "piano", "en": "piano", "rom": "pi-a-no", "emoji": "🎹"}, {"kr": "기타를 치다", "vi": "chơi guitar", "en": "play guitar", "rom": "gi-ta-reul chi-da", "emoji": "🎸"}]}, {"name": "부사 & 기타 Trạng từ & Khác", "words": [{"kr": "언제나", "vi": "luôn luôn", "en": "always", "rom": "eon-je-na", "emoji": "🔄"}, {"kr": "가끔", "vi": "thỉnh thoảng", "en": "sometimes", "rom": "ga-kkeum", "emoji": "🔸"}, {"kr": "거의", "vi": "hầu như", "en": "almost", "rom": "geo-ui", "emoji": "📊"}, {"kr": "전혀", "vi": "hoàn toàn", "en": "completely", "rom": "jeon-hyeo", "emoji": "💯"}, {"kr": "잘하다", "vi": "làm tốt", "en": "to do well", "rom": "jal-ha-da", "emoji": "👏"}, {"kr": "못하다", "vi": "không làm được", "en": "cannot do", "rom": "mot-ha-da", "emoji": "😣"}, {"kr": "보통이다", "vi": "bình thường", "en": "average", "rom": "bo-tong-i-da", "emoji": "😐"}, {"kr": "걱정하다", "vi": "lo lắng", "en": "to worry", "rom": "geok-jeong-ha-da", "emoji": "😟"}, {"kr": "건강", "vi": "sức khoẻ", "en": "health", "rom": "geon-gang", "emoji": "💪"}, {"kr": "걷다", "vi": "đi bộ", "en": "to walk", "rom": "geot-da", "emoji": "🚶"}, {"kr": "어렵다", "vi": "khó", "en": "difficult", "rom": "eo-ryeop-da", "emoji": "😰"}, {"kr": "묻다", "vi": "hỏi", "en": "to ask", "rom": "mut-da", "emoji": "❓"}, {"kr": "경치", "vi": "phong cảnh", "en": "scenery", "rom": "gyeong-chi", "emoji": "🏞️"}, {"kr": "도시락", "vi": "cơm hộp", "en": "lunch box", "rom": "do-si-rak", "emoji": "🍱"}, {"kr": "만화책", "vi": "truyện tranh", "en": "comic book", "rom": "man-hwa-chaek", "emoji": "📖"}, {"kr": "해외여행", "vi": "du lịch nước ngoài", "en": "overseas travel", "rom": "hae-oe-yeo-haeng", "emoji": "✈️"}]}]}, {"id": 15, "title": "교통", "subtitle": "Giao thông", "icon": "🚌", "groups": [{"name": "교통수단 Phương tiện", "words": [{"kr": "버스", "vi": "xe buýt", "en": "bus", "rom": "beo-seu", "emoji": "🚌"}, {"kr": "기차", "vi": "tàu hoả", "en": "train", "rom": "gi-cha", "emoji": "🚂"}, {"kr": "택시", "vi": "taxi", "en": "taxi", "rom": "taek-si", "emoji": "🚕"}, {"kr": "지하철", "vi": "tàu điện ngầm", "en": "subway", "rom": "ji-ha-cheol", "emoji": "🚇"}, {"kr": "오토바이", "vi": "xe máy", "en": "motorcycle", "rom": "o-to-ba-i", "emoji": "🏍️"}, {"kr": "자동차", "vi": "ô tô", "en": "car", "rom": "ja-dong-cha", "emoji": "🚗"}, {"kr": "배", "vi": "thuyền", "en": "ship", "rom": "bae", "emoji": "🚢"}, {"kr": "비행기", "vi": "máy bay", "en": "airplane", "rom": "bi-haeng-gi", "emoji": "✈️"}, {"kr": "자전거", "vi": "xe đạp", "en": "bicycle", "rom": "ja-jeon-geo", "emoji": "🚲"}]}, {"name": "이동 Di chuyển", "words": [{"kr": "타다", "vi": "lên (xe)", "en": "to ride", "rom": "ta-da", "emoji": "🚏"}, {"kr": "내리다", "vi": "xuống (xe)", "en": "to get off", "rom": "nae-ri-da", "emoji": "🚪"}, {"kr": "갈아타다", "vi": "chuyển xe", "en": "to transfer", "rom": "ga-ra-ta-da", "emoji": "🔄"}, {"kr": "길이 막히다", "vi": "tắc đường", "en": "traffic jam", "rom": "gil-i mak-hi-da", "emoji": "🚗"}, {"kr": "시간이 걸리다", "vi": "mất thời gian", "en": "to take time", "rom": "si-gan-i geol-li-da", "emoji": "⏱️"}]}, {"name": "장소 & 기타 Nơi chốn & Khác", "words": [{"kr": "버스 정류장", "vi": "trạm xe buýt", "en": "bus stop", "rom": "beo-seu jeong-ryu-jang", "emoji": "🚏"}, {"kr": "지하철역", "vi": "ga tàu điện ngầm", "en": "subway station", "rom": "ji-ha-cheol-yeok", "emoji": "🚇"}, {"kr": "기차역", "vi": "ga tàu hoả", "en": "train station", "rom": "gi-cha-yeok", "emoji": "🚉"}, {"kr": "공항", "vi": "sân bay", "en": "airport", "rom": "gong-hang", "emoji": "🛫"}, {"kr": "주차장", "vi": "bãi đỗ xe", "en": "parking lot", "rom": "ju-cha-jang", "emoji": "🅿️"}, {"kr": "매표소", "vi": "quầy vé", "en": "ticket booth", "rom": "mae-pyo-so", "emoji": "🎫"}, {"kr": "횡단보도", "vi": "vạch băng qua đường", "en": "crosswalk", "rom": "hoeng-dan-bo-do", "emoji": "🚸"}, {"kr": "신호등", "vi": "đèn tín hiệu", "en": "traffic light", "rom": "sin-ho-deung", "emoji": "🚦"}, {"kr": "고속도로", "vi": "đường cao tốc", "en": "highway", "rom": "go-sok-do-ro", "emoji": "🛣️"}, {"kr": "도로", "vi": "đường", "en": "road", "rom": "do-ro", "emoji": "🛤️"}, {"kr": "교통 카드", "vi": "thẻ giao thông", "en": "transit card", "rom": "gyo-tong ka-deu", "emoji": "💳"}, {"kr": "요금", "vi": "cước phí, tiền vé", "en": "fare", "rom": "yo-geum", "emoji": "💰"}, {"kr": "어떻게", "vi": "như thế nào", "en": "how", "rom": "eo-tteo-ke", "emoji": "❓"}, {"kr": "왜", "vi": "tại sao", "en": "why", "rom": "wae", "emoji": "🤔"}, {"kr": "편의점", "vi": "cửa hàng tiện lợi", "en": "convenience store", "rom": "pyeon-ui-jeom", "emoji": "🏪"}, {"kr": "주유소", "vi": "trạm xăng", "en": "gas station", "rom": "ju-yu-so", "emoji": "⛽"}, {"kr": "세옴", "vi": "xe ôm", "en": "motorbike taxi", "rom": "se-om", "emoji": "🏍️"}, {"kr": "시클로", "vi": "xích lô", "en": "cyclo", "rom": "si-keul-lo", "emoji": "🚲"}, {"kr": "모범택시", "vi": "taxi cao cấp", "en": "deluxe taxi", "rom": "mo-beom-taek-si", "emoji": "🚕"}, {"kr": "지각하다", "vi": "muộn, trễ", "en": "to be late", "rom": "ji-gak-ha-da", "emoji": "⏰"}]}]}];
+
+// ═══════════════════════════════════════════════════════
+// GLOBALS
+// ═══════════════════════════════════════════════════════
+let srData = {};
+let checkedWords = {};
+let allWords = [];
+let currentUnit = null;
+let fcWords = [], fcOrder = [], fcIdx = 0, fcFlipped = false, fcBackTarget = 'unit-screen';
+let quizState = { questions:[], idx:0, score:0, selected:false, currentPromptKr:'' };
+let quizBackTarget = 'unit-screen';
+let clFilter = 'all';
+
+// Flatten
+UNITS.forEach(u => u.groups.forEach(g => g.words.forEach(w => {
+  allWords.push({...w, unitId:u.id, unitTitle:u.title, group:g.name});
+})));
+
+// ═══════════════════════════════════════════════════════
+// STORAGE — localStorage for persistent data on web
+// ═══════════════════════════════════════════════════════
+let storageOk = false;
+
+function showToast(msg, type, duration) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || 'info');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), duration || 2500);
+}
+
+function updateStorageBadge() {
+  const el = document.getElementById('storage-badge');
+  if (!el) return;
+  if (storageOk) { el.textContent = '💾 Saved'; el.className = 'storage-status ok'; }
+  else { el.textContent = '⚠️ No storage'; el.className = 'storage-status fail'; }
+}
+
+function loadData() {
+  try {
+    const s1 = localStorage.getItem('kr-vocab-sr');
+    if (s1) srData = JSON.parse(s1);
+    const s2 = localStorage.getItem('kr-vocab-checked');
+    if (s2) checkedWords = JSON.parse(s2);
+    storageOk = true;
+  } catch(e) {
+    storageOk = false;
+  }
+  updateStorageBadge();
+  const lc = getLearnedCount(), cc = getCheckedCount();
+  if (lc > 0 || cc > 0) {
+    showToast('✅ Đã tải: ' + lc + ' từ đã học, ' + cc + ' từ đã thuộc', 'success', 3000);
+  }
+  renderAll();
+}
+
+function saveAll() {
+  try {
+    localStorage.setItem('kr-vocab-sr', JSON.stringify(srData));
+    localStorage.setItem('kr-vocab-checked', JSON.stringify(checkedWords));
+    storageOk = true;
+  } catch(e) {
+    storageOk = false;
+    showToast('⚠️ Lưu thất bại — hãy Export backup!', 'error', 4000);
+  }
+  updateStorageBadge();
+}
+
+// Export/Import backup
+function exportData() {
+  const data = { srData, checkedWords, exportDate: new Date().toISOString(), version: 2 };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'korean-vocab-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📤 Đã export backup!', 'success');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.srData) srData = data.srData;
+      if (data.checkedWords) checkedWords = data.checkedWords;
+      await saveAll();
+      renderAll();
+      showToast('📥 Đã khôi phục tiến trình!', 'success', 3000);
+    } catch(err) {
+      showToast('❌ File không hợp lệ', 'error');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ═══════════════════════════════════════════════════════
+// TTS — improved settings
+// ═══════════════════════════════════════════════════════
+let voicesLoaded = false;
+function loadVoices() {
+  if (voicesLoaded) return;
+  speechSynthesis.getVoices();
+  voicesLoaded = true;
+}
+if (typeof speechSynthesis !== 'undefined') {
+  speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+}
+
+function speakKorean(text, rate) {
+  if (!text || typeof speechSynthesis === 'undefined') return;
+  speechSynthesis.cancel();
+  rate = rate || 0.75;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ko-KR';
+  u.rate = rate;
+  u.pitch = 1.0;
+  u.volume = 1.0;
+  const voices = speechSynthesis.getVoices();
+  // Prefer Yuna (iOS) or any high-quality Korean voice
+  const preferred = voices.find(v => v.lang === 'ko-KR' && v.name.includes('Yuna'))
+    || voices.find(v => v.lang === 'ko-KR' && !v.name.includes('Google'))
+    || voices.find(v => v.lang.startsWith('ko'));
+  if (preferred) u.voice = preferred;
+  speechSynthesis.speak(u);
+}
+
+// ═══════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════
+function shuffle(a) { const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  // Nav highlight
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (id === 'home') document.getElementById('nav-home').classList.add('active');
+  else if (id === 'checklist-screen') { document.getElementById('nav-checklist').classList.add('active'); renderChecklist(); }
+  else if (id === 'stats-screen') { document.getElementById('nav-stats').classList.add('active'); renderStats(); }
+  window.scrollTo(0,0);
+}
+
+// SR calc
+function calcSR(sr, quality) {
+  let {interval,ease,reps} = sr;
+  if (quality < 2) { reps=0; interval=1; }
+  else { reps++; if(reps===1) interval=1; else if(reps===2) interval=6; else interval=Math.round(interval*ease); ease=Math.max(1.3,ease+(0.1-(3-quality)*0.15)); }
+  return {interval,ease,reps,nextReview:Date.now()+interval*60000,lastReview:Date.now()};
+}
+
+function updateSR(kr, quality) {
+  const cur = srData[kr] || {interval:0,ease:2.5,reps:0,nextReview:0,lastReview:0};
+  srData[kr] = calcSR(cur, quality);
+  saveAll();
+}
+
+function getLearnedCount() { return Object.keys(srData).filter(k=>srData[k]&&srData[k].reps>0).length; }
+function getDueCount() { return Object.keys(srData).filter(k=>srData[k]&&srData[k].nextReview<=Date.now()).length; }
+function getCheckedCount() { return Object.keys(checkedWords).filter(k=>checkedWords[k]).length; }
+
+// ═══════════════════════════════════════════════════════
+// RENDER HOME
+// ═══════════════════════════════════════════════════════
+function renderAll() {
+  renderHome();
+}
+
+function renderHome() {
+  const learned = getLearnedCount(), due = getDueCount(), total = allWords.length;
+  const pct = Math.round((learned/total)*100);
+  document.getElementById('p-learned').textContent = learned;
+  document.getElementById('p-due').textContent = due;
+  document.getElementById('p-due').className = 'p-num' + (due > 0 ? ' red' : ' green');
+  document.getElementById('p-total').textContent = total;
+  document.getElementById('p-bar').style.width = pct + '%';
+  document.getElementById('p-pct').textContent = pct + '% hoàn thành';
+  const rb = document.getElementById('review-btn');
+  if (due > 0) { rb.style.display = 'block'; rb.textContent = '🔄 Ôn tập ngay (' + due + ' từ)'; }
+  else rb.style.display = 'none';
+
+  let html = '';
+  UNITS.forEach(u => {
+    let wc = 0, lc = 0;
+    u.groups.forEach(g => { wc += g.words.length; g.words.forEach(w => { if(srData[w.kr]&&srData[w.kr].reps>0) lc++; }); });
+    const p = Math.round((lc/wc)*100);
+    html += `<button class="unit-card" onclick="openUnit(${u.id})">
+      <div class="unit-icon">${u.icon}</div>
+      <div class="unit-num">Bài ${u.id}</div>
+      <div class="unit-kr">${u.title}</div>
+      <div class="unit-vi">${u.subtitle}</div>
+      <div class="unit-bar"><div class="unit-bar-fill" style="width:${p}%"></div></div>
+      <div class="unit-count">${lc}/${wc}</div>
+    </button>`;
+  });
+  document.getElementById('units-grid').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════
+// UNIT DETAIL
+// ═══════════════════════════════════════════════════════
+function openUnit(id) {
+  currentUnit = UNITS.find(u => u.id === id);
+  if (!currentUnit) return;
+  document.getElementById('unit-top-title').textContent = 'Bài ' + id + ': ' + currentUnit.title;
+  document.getElementById('unit-hero').textContent = currentUnit.icon + ' ' + currentUnit.subtitle;
+  let html = '';
+  currentUnit.groups.forEach((g, gi) => {
+    const chips = g.words.slice(0,6).map(w => `<button class="word-chip" onclick="speakKorean('${w.kr.replace(/'/g,"\\'")}')">${w.emoji} ${w.kr}</button>`).join('');
+    const more = g.words.length > 6 ? `<span class="more-words">+${g.words.length-6}</span>` : '';
+    html += `<div class="group-card">
+      <div class="group-head"><div class="group-name">${g.name}</div><div class="group-count">${g.words.length} từ</div></div>
+      <div class="word-chips">${chips}${more}</div>
+      <div class="group-btns">
+        <button class="btn-flash" onclick="startFlashcard(${currentUnit.id},${gi},'unit-screen')">🃏 Flashcard</button>
+        <button class="btn-quiz" onclick="startQuiz(${currentUnit.id},${gi},'unit-screen')">✍️ Quiz</button>
+      </div>
+      <button style="width:100%;margin-top:8px;padding:8px;border-radius:10px;background:var(--purple-bg);color:var(--purple);font-size:12px;font-weight:600;border:none;cursor:pointer" onclick="playAllWords(${currentUnit.id},${gi})">🔊 Đọc tất cả từ trong nhóm</button>
+    </div>`;
+  });
+  document.getElementById('unit-groups').innerHTML = html;
+  showScreen('unit-screen');
+}
+
+// ═══════════════════════════════════════════════════════
+// FLASHCARD
+// ═══════════════════════════════════════════════════════
+function startFlashcard(unitId, groupIdx, backTo) {
+  const unit = UNITS.find(u=>u.id===unitId);
+  if (!unit) return;
+  fcWords = unit.groups[groupIdx].words;
+  fcOrder = shuffle([...Array(fcWords.length).keys()]);
+  fcIdx = 0; fcFlipped = false;
+  fcBackTarget = backTo;
+  document.getElementById('fc-back-btn').onclick = () => { showScreen(fcBackTarget); renderHome(); };
+  document.getElementById('fc-title').textContent = unit.title + ' · ' + unit.groups[groupIdx].name;
+  renderFlashcard();
+  showScreen('fc-screen');
+}
+
+function startReview() {
+  const due = allWords.filter(w => srData[w.kr] && srData[w.kr].nextReview <= Date.now());
+  const words = due.length > 0 ? due.slice(0,20) : shuffle(allWords).slice(0,10);
+  // Create a "virtual" group
+  fcWords = words;
+  fcOrder = shuffle([...Array(fcWords.length).keys()]);
+  fcIdx = 0; fcFlipped = false;
+  fcBackTarget = 'home';
+  document.getElementById('fc-back-btn').onclick = () => { showScreen('home'); renderHome(); };
+  document.getElementById('fc-title').textContent = '🔄 Ôn tập';
+  renderFlashcard();
+  showScreen('fc-screen');
+}
+
+function renderFlashcard() {
+  if (fcIdx >= fcWords.length || fcIdx >= fcOrder.length) {
+    document.getElementById('done-emoji').textContent = '🎉';
+    document.getElementById('done-title').textContent = 'Hoàn thành!';
+    document.getElementById('done-sub').textContent = 'Đã ôn ' + fcWords.length + ' từ vựng';
+    document.getElementById('done-btn').onclick = () => { showScreen(fcBackTarget); renderHome(); };
+    showScreen('done-screen');
+    return;
+  }
+  const w = fcWords[fcOrder[fcIdx]];
+  if (!w) { fcIdx++; renderFlashcard(); return; } // safety
+  document.getElementById('fc-counter').textContent = (fcIdx+1) + ' / ' + fcWords.length;
+  document.getElementById('fc-emoji').textContent = w.emoji;
+  document.getElementById('fc-kr').textContent = w.kr;
+  document.getElementById('fc-rom').textContent = w.rom;
+  document.getElementById('fc-emoji2').textContent = w.emoji;
+  document.getElementById('fc-kr2').textContent = w.kr;
+  document.getElementById('fc-vi').textContent = w.vi;
+  document.getElementById('fc-en').textContent = w.en;
+  document.getElementById('fc-rom2').textContent = w.rom;
+  fcFlipped = false;
+  document.getElementById('fc-inner').classList.remove('flipped');
+  document.getElementById('fc-rates').style.display = 'none';
+  document.getElementById('fc-speak-btn').onclick = (e) => { e.stopPropagation(); speakKorean(w.kr); };
+}
+
+document.getElementById('fc-wrapper').addEventListener('click', () => {
+  if (!fcFlipped && fcIdx < fcWords.length) {
+    fcFlipped = true;
+    document.getElementById('fc-inner').classList.add('flipped');
+    document.getElementById('fc-rates').style.display = 'flex';
+    const w = fcWords[fcOrder[fcIdx]];
+    if (w) speakKorean(w.kr);
+  }
+});
+
+function rateCard(q) {
+  const w = fcWords[fcOrder[fcIdx]];
+  if (w) updateSR(w.kr, q);
+  fcIdx++;
+  renderFlashcard();
+}
+
+// ═══════════════════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════════════════
+function startQuiz(unitId, groupIdx, backTo) {
+  const unit = UNITS.find(u=>u.id===unitId);
+  if (!unit) return;
+  const words = unit.groups[groupIdx].words;
+  quizBackTarget = backTo;
+  document.getElementById('quiz-back-btn').onclick = () => { showScreen(quizBackTarget); renderHome(); };
+  document.getElementById('quiz-title').textContent = 'Quiz · ' + unit.title;
+
+  const qs = shuffle(words).slice(0, Math.min(10, words.length)).map(w => {
+    const mode = Math.random() > 0.5 ? 'kr2vi' : 'vi2kr';
+    const correct = mode === 'kr2vi' ? w.vi : w.kr;
+    const prompt = mode === 'kr2vi' ? w.kr : w.vi;
+    const pool = mode === 'kr2vi'
+      ? allWords.filter(x=>x.vi!==w.vi).map(x=>x.vi)
+      : allWords.filter(x=>x.kr!==w.kr).map(x=>x.kr);
+    const opts = shuffle([correct, ...shuffle(pool).slice(0,3)]);
+    return { word:w, mode, prompt, correct, options:opts };
+  });
+  quizState = { questions:qs, idx:0, score:0, selected:false, currentPromptKr:'' };
+  renderQuiz();
+  showScreen('quiz-screen');
+}
+
+function renderQuiz() {
+  const {questions, idx, score} = quizState;
+  if (idx >= questions.length) {
+    const pct = score >= questions.length * 0.7;
+    document.getElementById('done-emoji').textContent = pct ? '🏆' : '💪';
+    document.getElementById('done-title').textContent = score + ' / ' + questions.length;
+    document.getElementById('done-sub').textContent = pct ? 'Xuất sắc!' : 'Tiếp tục cố gắng!';
+    document.getElementById('done-btn').onclick = () => { showScreen(quizBackTarget); renderHome(); };
+    showScreen('done-screen');
+    return;
+  }
+  const q = questions[idx];
+  document.getElementById('quiz-counter').textContent = 'Câu ' + (idx+1) + '/' + questions.length;
+  document.getElementById('quiz-score').textContent = '✅ ' + score;
+  document.getElementById('quiz-mode').textContent = q.mode === 'kr2vi' ? 'Nghĩa tiếng Việt của:' : 'Từ tiếng Hàn của:';
+  document.getElementById('quiz-prompt').innerHTML = (q.word.emoji||'') + ' ' + q.prompt;
+  quizState.currentPromptKr = q.mode === 'kr2vi' ? q.prompt : '';
+  document.getElementById('quiz-speak').style.display = q.mode === 'kr2vi' ? 'inline-block' : 'none';
+
+  let html = '';
+  q.options.forEach((opt, i) => {
+    html += `<button class="opt-btn" id="opt-${i}" onclick="selectQuizOpt(${i})">${opt}</button>`;
+  });
+  document.getElementById('quiz-opts').innerHTML = html;
+  quizState.selected = false;
+}
+
+function selectQuizOpt(i) {
+  if (quizState.selected) return;
+  quizState.selected = true;
+  const q = quizState.questions[quizState.idx];
+  const sel = q.options[i];
+  const correct = sel === q.correct;
+  if (correct) { quizState.score++; updateSR(q.word.kr, 3); }
+  else updateSR(q.word.kr, 0);
+
+  q.options.forEach((opt, j) => {
+    const el = document.getElementById('opt-'+j);
+    if (opt === q.correct) el.classList.add('correct');
+    else if (j === i) el.classList.add('wrong');
+  });
+
+  setTimeout(() => { quizState.idx++; renderQuiz(); }, 1100);
+}
+
+// ═══════════════════════════════════════════════════════
+// CHECKLIST
+// ═══════════════════════════════════════════════════════
+function renderChecklist() {
+  const checked = getCheckedCount();
+  document.getElementById('cl-stats').textContent = `✅ ${checked} / ${allWords.length} đã thuộc`;
+
+  // Filter buttons
+  let fhtml = `<button class="filter-btn ${clFilter==='all'?'active':''}" onclick="clFilter='all';renderChecklist()">Tất cả</button>`;
+  fhtml += `<button class="filter-btn ${clFilter==='unchecked'?'active':''}" onclick="clFilter='unchecked';renderChecklist()">Chưa thuộc</button>`;
+  fhtml += `<button class="filter-btn ${clFilter==='checked'?'active':''}" onclick="clFilter='checked';renderChecklist()">Đã thuộc</button>`;
+  UNITS.forEach(u => {
+    fhtml += `<button class="filter-btn ${clFilter==='unit-'+u.id?'active':''}" onclick="clFilter='unit-${u.id}';renderChecklist()">Bài ${u.id}</button>`;
+  });
+  document.getElementById('cl-filter').innerHTML = fhtml;
+
+  let html = '';
+  UNITS.forEach(u => {
+    if (clFilter.startsWith('unit-') && clFilter !== 'unit-'+u.id) return;
+    let groupHtml = '';
+    u.groups.forEach(g => {
+      g.words.forEach(w => {
+        const isChecked = !!checkedWords[w.kr];
+        if (clFilter === 'checked' && !isChecked) return;
+        if (clFilter === 'unchecked' && isChecked) return;
+        groupHtml += `<div class="cl-word">
+          <div class="cl-check ${isChecked?'checked':''}" onclick="toggleCheck('${w.kr.replace(/'/g,"\\'")}')">
+            ${isChecked ? '✓' : ''}
+          </div>
+          <div class="cl-info">
+            <div class="cl-kr">${w.kr} <span style="font-size:11px;color:#aaa">${w.rom}</span></div>
+            <div class="cl-vi">${w.emoji} ${w.vi} · ${w.en}</div>
+          </div>
+          <button class="cl-speak-btn" onclick="speakKorean('${w.kr.replace(/'/g,"\\'")}')">🔊</button>
+        </div>`;
+      });
+    });
+    if (groupHtml) {
+      html += `<div class="cl-unit-group">
+        <div class="cl-unit-title">${u.icon} Bài ${u.id}: ${u.title} — ${u.subtitle}</div>
+        <div class="cl-card">${groupHtml}</div>
+      </div>`;
+    }
+  });
+  document.getElementById('cl-list').innerHTML = html || '<div style="text-align:center;color:#aaa;padding:40px">Không có từ nào</div>';
+}
+
+function toggleCheck(kr) {
+  checkedWords[kr] = !checkedWords[kr];
+  saveAll();
+  renderChecklist();
+}
+
+// ═══════════════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════════════
+function renderStats() {
+  let html = '';
+  UNITS.forEach(u => {
+    let wc=0, lc=0, mc=0;
+    u.groups.forEach(g => { wc+=g.words.length; g.words.forEach(w => { if(srData[w.kr]&&srData[w.kr].reps>0) lc++; if(srData[w.kr]&&srData[w.kr].reps>=3) mc++; }); });
+    const p = Math.round((lc/wc)*100);
+    html += `<div class="stat-row">
+      <div class="stat-icon">${u.icon}</div>
+      <div class="stat-info">
+        <div class="stat-title">Bài ${u.id}: ${u.title}</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${p}%"></div></div>
+      </div>
+      <div class="stat-nums">
+        <div class="stat-learned">${lc}/${wc}</div>
+        <div class="stat-mastered">⭐${mc}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('stats-list').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════
+
+// Play all words in a group sequentially
+let playAllTimeout = null;
+function playAllWords(unitId, groupIdx) {
+  const unit = UNITS.find(u=>u.id===unitId);
+  if (!unit) return;
+  const words = unit.groups[groupIdx].words;
+  clearTimeout(playAllTimeout);
+  let i = 0;
+  function playNext() {
+    if (i >= words.length) return;
+    speakKorean(words[i].kr, 0.8);
+    i++;
+    playAllTimeout = setTimeout(playNext, 2000);
+  }
+  playNext();
+}
+
+// INIT
+// ═══════════════════════════════════════════════════════
+loadData();
+
+// Auto-save when user leaves the page or switches tabs
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') saveAll();
+});
+window.addEventListener('beforeunload', () => saveAll());
+
+// Periodic auto-save every 30 seconds
+setInterval(() => {
+  if (getLearnedCount() > 0 || getCheckedCount() > 0) saveAll();
+}, 30000);
+</script>
+</body>
+</html>
